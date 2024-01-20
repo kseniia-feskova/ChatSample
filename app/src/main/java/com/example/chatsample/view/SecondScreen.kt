@@ -2,6 +2,7 @@ package com.example.chatsample.view
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +17,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -36,14 +38,19 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.chatsample.ui.theme.Blue10
+import com.example.chatsample.ui.theme.Blue50
+import com.example.chatsample.ui.theme.Blue30
 import com.example.chatsample.ui.theme.ChatSampleTheme
-import androidx.compose.material3.IconButton as IconButton
+import com.example.chatsample.ui.theme.WhiteBlue
 
 @Composable
 fun SecondScreenContent(navController: NavController? = null) {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Blue50),
     ) {
         Column(
             modifier = Modifier
@@ -56,7 +63,7 @@ fun SecondScreenContent(navController: NavController? = null) {
                     .padding(vertical = 8.dp),
                 text = "Second fragment",
                 style = MaterialTheme.typography.headlineMedium,
-                color = Color(10, 10, 100)
+                color = WhiteBlue
             )
 
             RegistrationForm()
@@ -72,7 +79,7 @@ fun SecondScreenContent(navController: NavController? = null) {
             ) {
                 Text(
                     modifier = Modifier.padding(horizontal = 12.dp),
-                    text = "Back", color = Color(10, 10, 10)
+                    text = "Back", color = WhiteBlue
                 )
             }
         }
@@ -95,7 +102,18 @@ fun RegistrationForm() {
         OutlinedTextField(
             value = username,
             onValueChange = { username = it },
-            label = { Text("Имя пользователя") }
+            shape = RoundedCornerShape(8.dp),
+            placeholder = { Text("Имя пользователя") },
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedTextColor = WhiteBlue,
+                focusedTextColor = Blue50,
+                unfocusedBorderColor = Blue50,
+                focusedBorderColor = WhiteBlue,
+                unfocusedContainerColor = Blue30,
+                focusedContainerColor = WhiteBlue,
+                unfocusedPlaceholderColor = Blue50,
+                focusedPlaceholderColor = Blue10
+            )
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -115,13 +133,17 @@ fun RegistrationForm() {
                     Icon(imageVector = image, contentDescription = description)
                 }
             },
-            label = { Text("Пароль") },
+            placeholder = { Text("Пароль") },
             shape = RoundedCornerShape(8.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                unfocusedBorderColor = Color(10, 10, 100),
-                unfocusedContainerColor = Color.White,
-                focusedLabelColor = Color(10, 10, 100),
-                unfocusedLabelColor = Color(10, 10, 100)
+                unfocusedTextColor = WhiteBlue,
+                focusedTextColor = Blue50,
+                unfocusedBorderColor = Blue50,
+                focusedBorderColor = WhiteBlue,
+                unfocusedContainerColor = Blue30,
+                focusedContainerColor = WhiteBlue,
+                unfocusedPlaceholderColor = Blue50,
+                focusedPlaceholderColor = Blue10
             )
         )
 
@@ -142,29 +164,35 @@ fun RegistrationForm() {
                     Icon(imageVector = image, contentDescription = description)
                 }
             },
-            label = { Text("Подтвердите пароль") },
+            placeholder = { Text("Подтвердите пароль") },
             shape = RoundedCornerShape(8.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                unfocusedBorderColor = Color(10, 10, 100),
-                unfocusedContainerColor = Color.White,
-                focusedLabelColor = Color(10, 10, 100),
-                unfocusedLabelColor = Color(10, 10, 100)
+                unfocusedTextColor = WhiteBlue,
+                focusedTextColor = Blue50,
+                unfocusedBorderColor = Blue50,
+                focusedBorderColor = WhiteBlue,
+                unfocusedContainerColor = Blue30,
+                focusedContainerColor = WhiteBlue,
+                unfocusedPlaceholderColor = Blue50,
+                focusedPlaceholderColor = Blue10
             )
         )
 
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(10, 10, 100)
+                containerColor = WhiteBlue,
+                disabledContentColor = Blue50,
+                disabledContainerColor = Blue30
             ),
             modifier = Modifier
-                .padding(vertical = 8.dp)
+                .padding(vertical = 8.dp, horizontal = 16.dp)
                 .align(Alignment.CenterHorizontally),
             onClick = { onSecondButtonClick(context, username, password, confirmPassword) },
             enabled = username.isNotBlank() && password.isNotBlank() && confirmPassword.isNotBlank()
         ) {
             Text(
-                text = "Login", color = Color(-10, -10, -1)
+                text = "Login", color = Blue50
             )
         }
     }
