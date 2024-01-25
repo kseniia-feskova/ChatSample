@@ -1,6 +1,7 @@
-package com.example.chatsample.view
+package com.example.chatsample.presentation.view
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -38,14 +39,16 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.chatsample.ui.theme.Blue10
-import com.example.chatsample.ui.theme.Blue50
-import com.example.chatsample.ui.theme.Blue30
-import com.example.chatsample.ui.theme.ChatSampleTheme
-import com.example.chatsample.ui.theme.WhiteBlue
+import com.example.chatsample.presentation.LoginViewModel
+import com.example.chatsample.presentation.UserUiState
+import com.example.chatsample.presentation.ui.theme.Blue10
+import com.example.chatsample.presentation.ui.theme.Blue30
+import com.example.chatsample.presentation.ui.theme.Blue50
+import com.example.chatsample.presentation.ui.theme.ChatSampleTheme
+import com.example.chatsample.presentation.ui.theme.WhiteBlue
 
 @Composable
-fun SecondScreenContent(navController: NavController? = null) {
+fun SecondScreenContent(navController: NavController, viewModel: LoginViewModel) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -66,7 +69,9 @@ fun SecondScreenContent(navController: NavController? = null) {
                 color = WhiteBlue
             )
 
-            RegistrationForm()
+            RegistrationForm(viewModel.userCreation) { name, password ->
+                viewModel.checkAndCreateUser(name, password)
+            }
 
             Button(
                 colors = ButtonDefaults.buttonColors(
@@ -87,8 +92,12 @@ fun SecondScreenContent(navController: NavController? = null) {
 }
 
 @Composable
-fun RegistrationForm() {
+fun RegistrationForm(
+    userUiState: UserUiState,
+    sendData: (String, String) -> Unit
+) {
     val context = LocalContext.current
+    handleStatus(context, userUiState)
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -104,16 +113,7 @@ fun RegistrationForm() {
             onValueChange = { username = it },
             shape = RoundedCornerShape(8.dp),
             placeholder = { Text("Имя пользователя") },
-            colors = OutlinedTextFieldDefaults.colors(
-                unfocusedTextColor = WhiteBlue,
-                focusedTextColor = Blue50,
-                unfocusedBorderColor = Blue50,
-                focusedBorderColor = WhiteBlue,
-                unfocusedContainerColor = Blue30,
-                focusedContainerColor = WhiteBlue,
-                unfocusedPlaceholderColor = Blue50,
-                focusedPlaceholderColor = Blue10
-            )
+            colors = editTextColors()
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -124,27 +124,10 @@ fun RegistrationForm() {
             singleLine = true,
             visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            trailingIcon = {
-                val image: ImageVector =
-                    if (passwordVisibility) Icons.Filled.Check else Icons.Filled.Close
-                val description: String =
-                    if (passwordVisibility) "Скрыть пароль" else "Показать пароль"
-                IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
-                    Icon(imageVector = image, contentDescription = description)
-                }
-            },
+            trailingIcon = { ShowPasswordIcon(passwordVisibility) { passwordVisibility = !passwordVisibility } },
             placeholder = { Text("Пароль") },
             shape = RoundedCornerShape(8.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                unfocusedTextColor = WhiteBlue,
-                focusedTextColor = Blue50,
-                unfocusedBorderColor = Blue50,
-                focusedBorderColor = WhiteBlue,
-                unfocusedContainerColor = Blue30,
-                focusedContainerColor = WhiteBlue,
-                unfocusedPlaceholderColor = Blue50,
-                focusedPlaceholderColor = Blue10
-            )
+            colors = editTextColors()
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -155,30 +138,14 @@ fun RegistrationForm() {
             singleLine = true,
             visualTransformation = if (confirmPasswordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            trailingIcon = {
-                val image: ImageVector =
-                    if (confirmPasswordVisibility) Icons.Filled.Check else Icons.Filled.Close
-                val description: String =
-                    if (confirmPasswordVisibility) "Скрыть пароль" else "Показать пароль"
-                IconButton(onClick = { confirmPasswordVisibility = !confirmPasswordVisibility }) {
-                    Icon(imageVector = image, contentDescription = description)
-                }
-            },
+            trailingIcon = { ShowPasswordIcon(confirmPasswordVisibility) { confirmPasswordVisibility = !confirmPasswordVisibility } },
             placeholder = { Text("Подтвердите пароль") },
             shape = RoundedCornerShape(8.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                unfocusedTextColor = WhiteBlue,
-                focusedTextColor = Blue50,
-                unfocusedBorderColor = Blue50,
-                focusedBorderColor = WhiteBlue,
-                unfocusedContainerColor = Blue30,
-                focusedContainerColor = WhiteBlue,
-                unfocusedPlaceholderColor = Blue50,
-                focusedPlaceholderColor = Blue10
-            )
+            colors = editTextColors()
         )
 
         Spacer(modifier = Modifier.height(16.dp))
+
         Button(
             colors = ButtonDefaults.buttonColors(
                 containerColor = WhiteBlue,
@@ -188,7 +155,15 @@ fun RegistrationForm() {
             modifier = Modifier
                 .padding(vertical = 8.dp, horizontal = 16.dp)
                 .align(Alignment.CenterHorizontally),
-            onClick = { onSecondButtonClick(context, username, password, confirmPassword) },
+            onClick = {
+                onSecondButtonClick(
+                    context,
+                    username,
+                    password,
+                    confirmPassword,
+                    sendData
+                )
+            },
             enabled = username.isNotBlank() && password.isNotBlank() && confirmPassword.isNotBlank()
         ) {
             Text(
@@ -198,32 +173,61 @@ fun RegistrationForm() {
     }
 }
 
+@Composable
+private fun editTextColors() = OutlinedTextFieldDefaults.colors(
+    unfocusedTextColor = WhiteBlue,
+    focusedTextColor = Blue50,
+    unfocusedBorderColor = Blue50,
+    focusedBorderColor = WhiteBlue,
+    unfocusedContainerColor = Blue30,
+    focusedContainerColor = WhiteBlue,
+    unfocusedPlaceholderColor = Blue50,
+    focusedPlaceholderColor = Blue10
+)
 
-fun onSecondButtonClick(
+@Composable
+private fun ShowPasswordIcon(passwordVisibility: Boolean, onClick: (Boolean) -> Unit) {
+    val image: ImageVector = if (passwordVisibility) Icons.Filled.Check else Icons.Filled.Close
+    val description: String = if (passwordVisibility) "Скрыть пароль" else "Показать пароль"
+    IconButton(
+        onClick = { onClick(passwordVisibility) }) {
+        Icon(imageVector = image, contentDescription = description)
+    }
+}
+
+private fun handleStatus(context: Context, userUiState: UserUiState) {
+    when (userUiState) {
+        is UserUiState.Loading -> Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()
+        is UserUiState.Success -> Toast.makeText(context, "You are successfully loged in", Toast.LENGTH_SHORT).show()
+        is UserUiState.Error -> Toast.makeText(context, "Error occur ${userUiState.message}", Toast.LENGTH_SHORT).show()
+        is UserUiState.Empty -> Log.e("RegistrationForm", "state is empty")
+    }
+}
+
+private fun onSecondButtonClick(
     context: Context,
     username: String,
     password: String,
-    confirmPassword: String
+    confirmPassword: String,
+    sendData: (String, String) -> Unit
 ) {
-    Toast.makeText(context, "You are successfully loged in", Toast.LENGTH_LONG).show()
-}
-
-fun onThirdButtonClick(navController: NavController?) {
-    navController?.popBackStack()
-}
-
-@Preview(showBackground = true)
-@Composable
-fun SecondScreenContentPreview() {
-    ChatSampleTheme {
-        SecondScreenContent()
+    if (password != confirmPassword) {
+        Toast.makeText(context, "Passwords must be the same", Toast.LENGTH_SHORT).show()
+    } else {
+        sendData(username, password)
     }
+}
+
+private fun onThirdButtonClick(navController: NavController?) {
+    navController?.popBackStack()
 }
 
 @Preview(showBackground = true)
 @Composable
 fun RegistrationFormPreview() {
     ChatSampleTheme {
-        RegistrationForm()
+        RegistrationForm(UserUiState.Empty) { name, paw ->
+            Log.e("Registreion form", "$name and $paw")
+        }
     }
 }

@@ -1,4 +1,4 @@
-package com.example.chatsample.navigation
+package com.example.chatsample.presentation.navigation
 
 enum class Screen {
     HOME,
