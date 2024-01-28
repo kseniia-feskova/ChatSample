@@ -6,10 +6,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.chatsample.presentation.LoginViewModel
+import com.example.chatsample.presentation.viewmodels.SignupViewModel
 import com.example.chatsample.presentation.di.ViewModelFactory
-import com.example.chatsample.presentation.view.FirstScreenContent
-import com.example.chatsample.presentation.view.SecondScreenContent
+import com.example.chatsample.presentation.view.HomeScreenContent
+import com.example.chatsample.presentation.view.LoginScreenContent
+import com.example.chatsample.presentation.view.SignUpScreenContent
+import com.example.chatsample.presentation.viewmodels.LoginViewModel
 
 @Composable
 fun AppNavHost(
@@ -23,7 +25,17 @@ fun AppNavHost(
     ) {
 
         composable(NavigationItem.Home.route) {
-            FirstScreenContent(navController)
+            HomeScreenContent(navController)
+        }
+        composable(NavigationItem.Signup.route) {
+            val localViewModelStoreOwner = LocalViewModelStoreOwner.current
+            if (localViewModelStoreOwner != null) {
+                val signupViewModel: SignupViewModel = viewModel(
+                    viewModelStoreOwner = localViewModelStoreOwner,
+                    factory = viewModelFactory
+                )
+                SignUpScreenContent(navController, signupViewModel)
+            }
         }
         composable(NavigationItem.Login.route) {
             val localViewModelStoreOwner = LocalViewModelStoreOwner.current
@@ -32,7 +44,7 @@ fun AppNavHost(
                     viewModelStoreOwner = localViewModelStoreOwner,
                     factory = viewModelFactory
                 )
-                SecondScreenContent(navController, loginViewModel)
+                LoginScreenContent(navController, loginViewModel)
             }
         }
     }

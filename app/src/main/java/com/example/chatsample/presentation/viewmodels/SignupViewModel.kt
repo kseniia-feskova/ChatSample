@@ -1,4 +1,4 @@
-package com.example.chatsample.presentation
+package com.example.chatsample.presentation.viewmodels
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -8,11 +8,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.chatsample.domain.model.UserUI
 import com.example.chatsample.domain.usecase.ICheckUsernameUseCase
 import com.example.chatsample.domain.usecase.ICreateUserUseCase
+import com.example.chatsample.presentation.model.UserUiState
 import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
 
-class LoginViewModel @Inject constructor(
+class SignupViewModel @Inject constructor(
     private val checkUserName: ICheckUsernameUseCase,
     private val createUser: ICreateUserUseCase
 ) : ViewModel() {
@@ -46,11 +47,4 @@ class LoginViewModel @Inject constructor(
             UserUiState.Error("Cannot create user")
         }
     }
-}
-
-sealed interface UserUiState {
-    data object Success : UserUiState
-    data class Error(val message: String) : UserUiState
-    data object Loading : UserUiState
-    data object Empty : UserUiState
 }

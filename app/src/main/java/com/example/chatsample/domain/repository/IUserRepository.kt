@@ -6,4 +6,5 @@ interface IUserRepository {
     suspend fun getUserOrNull(id: String): UserData?
     suspend fun setUser(user: UserData)
     suspend fun checkFreeName(name: String): Boolean
+    suspend fun getUserByName(name: String): UserData?
 }

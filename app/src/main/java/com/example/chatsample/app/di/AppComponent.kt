@@ -4,7 +4,7 @@ import android.app.Application
 import com.example.chatsample.presentation.MainActivity
 import com.example.chatsample.data.di.DataModule
 import com.example.chatsample.domain.di.DomainModule
-import com.example.chatsample.presentation.LoginViewModel
+import com.example.chatsample.presentation.viewmodels.SignupViewModel
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
@@ -22,5 +22,5 @@ interface AppComponent {
     }
     fun inject(application: Application)
     fun inject(activity: MainActivity)
-    fun inject(loginViewModel: LoginViewModel)
+    fun inject(loginViewModel: SignupViewModel)
 }
