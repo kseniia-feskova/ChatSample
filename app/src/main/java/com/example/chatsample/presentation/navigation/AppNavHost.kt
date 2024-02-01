@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.chatsample.presentation.viewmodels.SignupViewModel
 import com.example.chatsample.presentation.di.ViewModelFactory
+import com.example.chatsample.presentation.view.ChatsScreenContent
 import com.example.chatsample.presentation.view.HomeScreenContent
 import com.example.chatsample.presentation.view.LoginScreenContent
 import com.example.chatsample.presentation.view.SignUpScreenContent
@@ -46,6 +47,10 @@ fun AppNavHost(
                 )
                 LoginScreenContent(navController, loginViewModel)
             }
+        }
+
+        composable(NavigationItem.Chats.route){
+            ChatsScreenContent(navController)
         }
     }
 }

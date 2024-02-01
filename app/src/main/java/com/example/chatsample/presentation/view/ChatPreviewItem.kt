@@ -1,9 +1,14 @@
 package com.example.chatsample.presentation.view
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -16,45 +21,77 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.chatsample.domain.model.ChatUI
 import com.example.chatsample.presentation.ui.theme.ChatSampleTheme
 
 
 @Composable
-fun PuppyListItem(puppy: String) {
+fun ChatPreviewItem(chat: ChatUI) {
     Card(
         modifier = Modifier
             .padding(horizontal = 8.dp, vertical = 8.dp)
             .fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = Color(-2,-2,-1),
+            containerColor = Color(-2, -2, -1),
         ),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 2.dp
         ),
         shape = RoundedCornerShape(corner = CornerSize(16.dp))
     ) {
-        Row {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.CenterHorizontally),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Column(
                 modifier = Modifier
                     .padding(16.dp)
-                    .fillMaxWidth()
                     .align(Alignment.CenterVertically)
             ) {
-                Text(text = puppy, style = typography.headlineMedium, color = Color(10, 10, 100))
                 Text(
-                    text = "VIEW DETAIL",
+                    text = chat.author,
+                    style = typography.labelLarge,
+                    color = Color(10, 10, 100)
+                )
+                Text(
+                    text = chat.lastMessage,
                     style = typography.labelSmall,
                     color = Color(120, 200, 250)
                 )
+            }
+            Box(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.CenterVertically)
+            ) {
+                if (!chat.isRead) {
+                    UnreadIndicator()
+                }
             }
         }
     }
 }
 
+@Composable
+fun UnreadIndicator() {
+    Box(
+        modifier = Modifier
+            .size(8.dp)
+            .background(color = Color(10, 10, 100), shape = CircleShape)
+    )
+}
+
 @Preview(showBackground = true)
 @Composable
-fun PuppyListItemPreview() {
+fun ChatPreviewItemPreview() {
     ChatSampleTheme {
-        PuppyListItem("Android")
+        ChatPreviewItem(
+            ChatUI(
+                "Kseniia", "Hello, my friend it's me", false
+            )
+        )
     }
 }
