@@ -5,7 +5,7 @@ import com.example.chatsample.domain.model.UserData
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
-class UsersRepository() : IUserRepository {
+class UsersRepository : IUserRepository {
 
     private val collection = FirebaseFirestore.getInstance().collection("users")
     override suspend fun getUserOrNull(id: String): UserData? {
@@ -23,5 +23,13 @@ class UsersRepository() : IUserRepository {
     override suspend fun checkFreeName(name: String): Boolean {
         val users = collection.whereEqualTo("name", name).get().await().documents
         return users.isEmpty()
+    }
+
+    override suspend fun getUserByName(name: String): UserData? {
+        val documents = collection.whereEqualTo("name", name).get().await().documents
+        return if (documents.isNotEmpty()) {
+            val userData = documents.first().toObject(UserData::class.java)
+            userData
+        } else null
     }
 }

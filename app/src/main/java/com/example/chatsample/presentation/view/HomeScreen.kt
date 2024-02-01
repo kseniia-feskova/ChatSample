@@ -19,7 +19,7 @@ import com.example.chatsample.presentation.navigation.Screen
 import com.example.chatsample.presentation.ui.theme.ChatSampleTheme
 
 @Composable
-fun FirstScreenContent(navController: NavController? = null) {
+fun HomeScreenContent(navController: NavController? = null) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
@@ -48,24 +48,33 @@ fun FirstScreenContent(navController: NavController? = null) {
                 modifier = Modifier
                     .padding(vertical = 8.dp)
                     .align(Alignment.CenterHorizontally),
-                onClick = { onButtonClick(navController) }
+                onClick = { navController?.navigate(Screen.LOGIN.name) }
             ) {
                 Text(
-                    text = "Click to start", color = Color(-10, -10, -1)
+                    text = "Log in", color = Color(-10, -10, -1)
+                )
+            }
+            Button(
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(10, 10, 100)
+                ),
+                modifier = Modifier
+                    .padding(vertical = 8.dp)
+                    .align(Alignment.CenterHorizontally),
+                onClick = { navController?.navigate(Screen.SIGNUP.name) }
+            ) {
+                Text(
+                    text = "Sign up", color = Color(-10, -10, -1)
                 )
             }
         }
     }
 }
 
-fun onButtonClick(navController: NavController?) {
-    navController?.navigate(Screen.LOGIN.name)
-}
-
 @Preview(showBackground = true)
 @Composable
-fun FirstScreenContentPreview() {
+fun HomeScreenContentPreview() {
     ChatSampleTheme {
-        FirstScreenContent()
+        HomeScreenContent()
     }
 }

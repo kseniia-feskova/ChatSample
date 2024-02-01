@@ -39,16 +39,16 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.chatsample.presentation.LoginViewModel
-import com.example.chatsample.presentation.UserUiState
+import com.example.chatsample.presentation.model.UserUiState
 import com.example.chatsample.presentation.ui.theme.Blue10
 import com.example.chatsample.presentation.ui.theme.Blue30
 import com.example.chatsample.presentation.ui.theme.Blue50
 import com.example.chatsample.presentation.ui.theme.ChatSampleTheme
 import com.example.chatsample.presentation.ui.theme.WhiteBlue
+import com.example.chatsample.presentation.viewmodels.SignupViewModel
 
 @Composable
-fun SecondScreenContent(navController: NavController, viewModel: LoginViewModel) {
+fun SignUpScreenContent(navController: NavController, viewModel: SignupViewModel) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -167,7 +167,7 @@ fun RegistrationForm(
             enabled = username.isNotBlank() && password.isNotBlank() && confirmPassword.isNotBlank()
         ) {
             Text(
-                text = "Login", color = Blue50
+                text = "Войти", color = Blue50
             )
         }
     }
