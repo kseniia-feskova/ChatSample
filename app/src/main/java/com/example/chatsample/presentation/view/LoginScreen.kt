@@ -189,7 +189,7 @@ private fun handleStatus(
     navController: NavController?
 ) {
     when (userUiState) {
-        is UserUiState.Loading -> Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()
+        is UserUiState.Loading -> Log.e("RegistrationForm", "Loading")
         is UserUiState.Success -> { navController?.navigate(Screen.CHATS.name) }
         is UserUiState.Error -> Toast.makeText(context, "Error occur ${userUiState.message}", Toast.LENGTH_SHORT).show()
         is UserUiState.Empty -> Log.e("RegistrationForm", "state is empty")
