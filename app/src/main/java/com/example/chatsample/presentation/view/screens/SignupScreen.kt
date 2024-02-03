@@ -1,4 +1,4 @@
-package com.example.chatsample.presentation.view
+package com.example.chatsample.presentation.view.screens
 
 import android.content.Context
 import android.util.Log
@@ -46,10 +46,10 @@ import com.example.chatsample.presentation.ui.theme.Blue30
 import com.example.chatsample.presentation.ui.theme.Blue50
 import com.example.chatsample.presentation.ui.theme.ChatSampleTheme
 import com.example.chatsample.presentation.ui.theme.WhiteBlue
-import com.example.chatsample.presentation.viewmodels.LoginViewModel
+import com.example.chatsample.presentation.viewmodels.SignupViewModel
 
 @Composable
-fun LoginScreenContent(navController: NavController, viewModel: LoginViewModel) {
+fun SignUpScreenContent(navController: NavController, viewModel: SignupViewModel) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -70,8 +70,8 @@ fun LoginScreenContent(navController: NavController, viewModel: LoginViewModel) 
                 color = WhiteBlue
             )
 
-            LoginForm(viewModel.userCheck, navController) { name, password ->
-                viewModel.checkAndLogin(name, password)
+            RegistrationForm(viewModel.userCreation, navController = navController) { name, password ->
+                viewModel.checkAndCreateUser(name, password)
             }
 
             Button(
@@ -93,17 +93,19 @@ fun LoginScreenContent(navController: NavController, viewModel: LoginViewModel) 
 }
 
 @Composable
-fun LoginForm(
-    userCheck: UserUiState,
+fun RegistrationForm(
+    userUiState: UserUiState,
     navController: NavController?,
-    sendData: (String, String) -> Unit
+    sendData: (String, String) -> Unit,
 ) {
     val context = LocalContext.current
-    handleStatus(context, userCheck, navController)
+    handleStatus(context, userUiState,navController)
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
     var passwordVisibility by remember { mutableStateOf(false) }
+    var confirmPasswordVisibility by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier.padding(16.dp)
@@ -124,17 +126,27 @@ fun LoginForm(
             singleLine = true,
             visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            trailingIcon = {
-                ShowPasswordIcon(passwordVisibility) {
-                    passwordVisibility = !passwordVisibility
-                }
-            },
+            trailingIcon = { ShowPasswordIcon(passwordVisibility) { passwordVisibility = !passwordVisibility } },
             placeholder = { Text("Пароль") },
             shape = RoundedCornerShape(8.dp),
             colors = editTextColors()
         )
 
         Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = confirmPassword,
+            onValueChange = { confirmPassword = it },
+            singleLine = true,
+            visualTransformation = if (confirmPasswordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            trailingIcon = { ShowPasswordIcon(confirmPasswordVisibility) { confirmPasswordVisibility = !confirmPasswordVisibility } },
+            placeholder = { Text("Подтвердите пароль") },
+            shape = RoundedCornerShape(8.dp),
+            colors = editTextColors()
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             colors = ButtonDefaults.buttonColors(
@@ -147,12 +159,14 @@ fun LoginForm(
                 .align(Alignment.CenterHorizontally),
             onClick = {
                 onSecondButtonClick(
+                    context,
                     username,
                     password,
+                    confirmPassword,
                     sendData
                 )
             },
-            enabled = username.isNotBlank() && password.isNotBlank()
+            enabled = username.isNotBlank() && password.isNotBlank() && confirmPassword.isNotBlank()
         ) {
             Text(
                 text = "Войти", color = Blue50
@@ -183,13 +197,9 @@ private fun ShowPasswordIcon(passwordVisibility: Boolean, onClick: (Boolean) -> 
     }
 }
 
-private fun handleStatus(
-    context: Context,
-    userUiState: UserUiState,
-    navController: NavController?
-) {
+private fun handleStatus(context: Context, userUiState: UserUiState, navController: NavController?) {
     when (userUiState) {
-        is UserUiState.Loading -> Log.e("RegistrationForm", "Loading")
+        is UserUiState.Loading -> Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()
         is UserUiState.Success -> { navController?.navigate(Screen.CHATS.name) }
         is UserUiState.Error -> Toast.makeText(context, "Error occur ${userUiState.message}", Toast.LENGTH_SHORT).show()
         is UserUiState.Empty -> Log.e("RegistrationForm", "state is empty")
@@ -197,11 +207,17 @@ private fun handleStatus(
 }
 
 private fun onSecondButtonClick(
+    context: Context,
     username: String,
     password: String,
+    confirmPassword: String,
     sendData: (String, String) -> Unit
 ) {
-    sendData(username, password)
+    if (password != confirmPassword) {
+        Toast.makeText(context, "Passwords must be the same", Toast.LENGTH_SHORT).show()
+    } else {
+        sendData(username, password)
+    }
 }
 
 private fun onThirdButtonClick(navController: NavController?) {
@@ -210,10 +226,10 @@ private fun onThirdButtonClick(navController: NavController?) {
 
 @Preview(showBackground = true)
 @Composable
-fun LoginFormreview() {
+fun RegistrationFormPreview() {
     ChatSampleTheme {
-        LoginForm(UserUiState.Empty, null) { name, paw ->
-            Log.e("Registration form", "$name and $paw")
+        RegistrationForm(UserUiState.Empty, null) { name, paw ->
+            Log.e("Registreion form", "$name and $paw")
         }
     }
 }

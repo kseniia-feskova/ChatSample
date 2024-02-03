@@ -31,7 +31,6 @@ import com.example.chatsample.presentation.ui.theme.ChatSampleTheme
 @Composable
 fun <T> BottomDrawerContent(
     items: List<T>,
-    drawerState: DrawerValue,
     modifier: Modifier,
     onClose: (DrawerValue) -> Unit,
     itemView: @Composable (T) -> Unit = {},
@@ -51,18 +50,17 @@ fun <T> BottomDrawerContent(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Box(modifier = Modifier.background(Color.Transparent)) {
-            if (drawerState == DrawerValue.Open) {
-                IconButton(
-                    modifier = Modifier.align(Alignment.TopEnd),
-                    onClick = { onClose(drawerState) },
-                    content = {
-                        Icon(
-                            imageVector = Icons.Filled.Close,
-                            contentDescription = null,
-                            tint = Color(10, 10, 100)
-                        )
-                    })
-            }
+            IconButton(
+                modifier = Modifier.align(Alignment.TopEnd),
+                onClick = { onClose(DrawerValue.Open) },
+                content = {
+                    Icon(
+                        imageVector = Icons.Filled.Close,
+                        contentDescription = null,
+                        tint = Color(10, 10, 100)
+                    )
+                })
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -92,7 +90,6 @@ fun BottomDrawerContentPreview() {
         BottomDrawerContent(modifier = Modifier
             .wrapContentHeight(),
             items = listOf("Selectial", "Cortney", "Fibie", "Ross"),
-            drawerState = DrawerValue.Open,
             onClose = { },
             itemView = {
                 Text(

@@ -1,4 +1,4 @@
-package com.example.chatsample.presentation.view
+package com.example.chatsample.presentation.view.screens
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

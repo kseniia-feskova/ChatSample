@@ -1,4 +1,4 @@
-package com.example.chatsample.presentation.view
+package com.example.chatsample.presentation.view.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -29,11 +29,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.chatsample.domain.model.ChatUI
 import com.example.chatsample.presentation.ui.theme.ChatSampleTheme
+import com.example.chatsample.presentation.view.ChatPreviewItem
 import com.example.chatsample.presentation.view.utils.BottomDrawerContent
 import com.example.chatsample.presentation.view.utils.FloatingButtonContent
 
 @Composable
 fun ChatsAndContactsScreen() {
+    //val listOfContacts = viewModel.getAllUsersWithoutMe(name)
     var isDrawerVisible by remember { mutableStateOf(DrawerValue.Closed) }
     fun changeDrawerVisibility() {
         isDrawerVisible = if (isDrawerVisible == DrawerValue.Open) DrawerValue.Closed
@@ -56,7 +58,6 @@ fun ChatsAndContactsScreen() {
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .wrapContentHeight(),
-                isDrawerVisible
             ) { changeDrawerVisibility() }
         }
     }
@@ -73,11 +74,10 @@ fun ChatsFloatingButton(onClick: () -> Unit) {
 }
 
 @Composable
-fun ContactsDrawer(modifier: Modifier, isDrawerVisible: DrawerValue, onCLose: () -> Unit) {
+fun ContactsDrawer(modifier: Modifier, onCLose: () -> Unit) {
     BottomDrawerContent(
         modifier = modifier,
         items = listOf("Selectial", "Cortney", "Fibie", "Ross", "Qwerty", "Poiuyt"),
-        drawerState = isDrawerVisible,
         onClose = { onCLose() },
         itemView = {
             Text(
