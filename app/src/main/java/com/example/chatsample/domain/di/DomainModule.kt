@@ -5,7 +5,9 @@ import com.example.chatsample.domain.usecase.CheckUsernameUseCase
 import com.example.chatsample.domain.usecase.CreateUserUseCase
 import com.example.chatsample.domain.usecase.ICheckUsernameUseCase
 import com.example.chatsample.domain.usecase.ICreateUserUseCase
+import com.example.chatsample.domain.usecase.IIsUserLoggedInUseCase
 import com.example.chatsample.domain.usecase.ILoginUseCase
+import com.example.chatsample.domain.usecase.IsUserLoggedInUseCase
 import com.example.chatsample.domain.usecase.LoginUseCase
 import dagger.Module
 import dagger.Provides
@@ -26,5 +28,10 @@ class DomainModule {
     @Provides
     fun provideLoginUseCase(userRepository: IUserRepository): ILoginUseCase {
         return LoginUseCase(userRepository)
+    }
+
+    @Provides
+    fun provideIsUserLoggedInUseCase(userRepository: IUserRepository): IIsUserLoggedInUseCase {
+        return IsUserLoggedInUseCase(userRepository)
     }
 }

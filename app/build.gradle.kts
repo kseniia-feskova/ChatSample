@@ -82,5 +82,6 @@ dependencies {
     implementation("com.google.dagger:dagger-android-support:$daggerVersion")
     kapt("com.google.dagger:dagger-android-processor:$daggerVersion")
 
+    implementation("com.chibatching.kotpref:kotpref:2.13.1")
 
 }
