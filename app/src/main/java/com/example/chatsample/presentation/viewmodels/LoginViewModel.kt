@@ -24,7 +24,7 @@ class LoginViewModel @Inject constructor(
             userCheck = UserUiState.Loading
             userCheck = try {
                 val isLogin = login.invoke(UserUI(name, password))
-                if(isLogin) UserUiState.Success
+                if (isLogin) UserUiState.Success
                 else UserUiState.Error("Cannot login")
 
             } catch (e: IOException) {
