@@ -1,6 +1,7 @@
 package com.example.chatsample.presentation.view
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,16 +22,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.chatsample.domain.model.ChatUI
+import com.example.chatsample.presentation.navigation.Screen
 import com.example.chatsample.presentation.ui.theme.ChatSampleTheme
 
 
 @Composable
-fun ChatPreviewItem(chat: ChatUI) {
+fun ChatPreviewItem(chat: ChatUI, navController: NavController? = null) {
     Card(
         modifier = Modifier
             .padding(horizontal = 8.dp, vertical = 8.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable {
+                navController?.navigate(Screen.CHAT.name)
+            },
         colors = CardDefaults.cardColors(
             containerColor = Color(-2, -2, -1),
         ),

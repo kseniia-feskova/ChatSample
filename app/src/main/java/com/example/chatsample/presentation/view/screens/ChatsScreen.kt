@@ -1,6 +1,7 @@
 package com.example.chatsample.presentation.view.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -28,13 +29,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.chatsample.domain.model.ChatUI
+import com.example.chatsample.presentation.navigation.Screen
 import com.example.chatsample.presentation.ui.theme.ChatSampleTheme
 import com.example.chatsample.presentation.view.ChatPreviewItem
 import com.example.chatsample.presentation.view.utils.BottomDrawerContent
 import com.example.chatsample.presentation.view.utils.FloatingButtonContent
 
 @Composable
-fun ChatsAndContactsScreen() {
+fun ChatsAndContactsScreen(navController: NavController? = null) {
     //val listOfContacts = viewModel.getAllUsersWithoutMe(name)
     //val listOfChats = viewModel.getAllChats()
     var isDrawerVisible by remember { mutableStateOf(DrawerValue.Closed) }
@@ -51,7 +53,7 @@ fun ChatsAndContactsScreen() {
             },
             floatingActionButtonPosition = FabPosition.End,
             content = { paddings ->
-                ChatsScreenContent(paddings, isDrawerVisible)
+                ChatsScreenContent(paddings, isDrawerVisible, navController)
             }
         )
         if (isDrawerVisible == DrawerValue.Open) {
@@ -59,6 +61,7 @@ fun ChatsAndContactsScreen() {
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .wrapContentHeight(),
+                navController = navController,
             ) { changeDrawerVisibility() }
         }
     }
@@ -75,7 +78,9 @@ fun ChatsFloatingButton(onClick: () -> Unit) {
 }
 
 @Composable
-fun ContactsDrawer(modifier: Modifier, onCLose: () -> Unit) {
+fun ContactsDrawer(
+    modifier: Modifier, navController: NavController? = null, onCLose: () -> Unit
+) {
     BottomDrawerContent(
         modifier = modifier,
         items = listOf("Selectial", "Cortney", "Fibie", "Ross", "Qwerty", "Poiuyt"),
@@ -83,10 +88,15 @@ fun ContactsDrawer(modifier: Modifier, onCLose: () -> Unit) {
         itemView = {
             Text(
                 text = "- $it",
-                modifier = Modifier.padding(8.dp),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .clickable {
+                        navController?.navigate(Screen.CHAT.name)
+                    },
                 color = Color(10, 10, 100),
-                style = MaterialTheme.typography.labelMedium
-            )
+                style = MaterialTheme.typography.labelMedium,
+
+                )
         }
     )
 }
@@ -108,7 +118,7 @@ fun ChatsScreenContent(
                 .align(Alignment.TopCenter)
                 .padding(12.dp),
         ) {
-            VerticalRecyclerView(listOfTestChats.sortedBy { it.isRead })
+            VerticalRecyclerView(listOfTestChats.sortedBy { it.isRead }, navController)
         }
         if (isDrawerVisible == DrawerValue.Open) {
             Box(
@@ -121,10 +131,10 @@ fun ChatsScreenContent(
 }
 
 @Composable
-fun VerticalRecyclerView(items: List<ChatUI>) {
+fun VerticalRecyclerView(items: List<ChatUI>, navController: NavController? = null) {
     LazyColumn(contentPadding = PaddingValues(vertical = 8.dp)) {
         items(items = items) {
-            ChatPreviewItem(chat = it)
+            ChatPreviewItem(chat = it, navController = navController)
         }
     }
 }
