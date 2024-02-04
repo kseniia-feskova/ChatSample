@@ -1,4 +1,4 @@
-package com.example.chatsample.presentation.view
+package com.example.chatsample.presentation.view.screens
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,8 +22,7 @@ import com.example.chatsample.presentation.viewmodels.HomeViewModel
 @Composable
 fun HomeScreenContent(navController: NavController? = null, viewModel: HomeViewModel) {
     if (viewModel.isUserLoggedIn()) {
-        //TODO change to chats
-        navController?.navigate(Screen.SIGNUP.name)
+        navController?.navigate(Screen.CHATS.name)
     } else {
         MainHomeScreenContent(navController)
     }

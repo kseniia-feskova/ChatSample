@@ -1,4 +1,4 @@
-package com.example.chatsample.presentation.view
+package com.example.chatsample.presentation.view.screens
 
 import android.content.Context
 import android.util.Log
@@ -40,6 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.chatsample.presentation.model.UserUiState
+import com.example.chatsample.presentation.navigation.Screen
 import com.example.chatsample.presentation.ui.theme.Blue10
 import com.example.chatsample.presentation.ui.theme.Blue30
 import com.example.chatsample.presentation.ui.theme.Blue50
@@ -69,7 +70,7 @@ fun SignUpScreenContent(navController: NavController, viewModel: SignupViewModel
                 color = WhiteBlue
             )
 
-            RegistrationForm(viewModel.userCreation) { name, password ->
+            RegistrationForm(viewModel.userCreation, navController = navController) { name, password ->
                 viewModel.checkAndCreateUser(name, password)
             }
 
@@ -94,10 +95,11 @@ fun SignUpScreenContent(navController: NavController, viewModel: SignupViewModel
 @Composable
 fun RegistrationForm(
     userUiState: UserUiState,
-    sendData: (String, String) -> Unit
+    navController: NavController?,
+    sendData: (String, String) -> Unit,
 ) {
     val context = LocalContext.current
-    handleStatus(context, userUiState)
+    handleStatus(context, userUiState,navController)
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -195,10 +197,10 @@ private fun ShowPasswordIcon(passwordVisibility: Boolean, onClick: (Boolean) -> 
     }
 }
 
-private fun handleStatus(context: Context, userUiState: UserUiState) {
+private fun handleStatus(context: Context, userUiState: UserUiState, navController: NavController?) {
     when (userUiState) {
         is UserUiState.Loading -> Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()
-        is UserUiState.Success -> Toast.makeText(context, "You are successfully loged in", Toast.LENGTH_SHORT).show()
+        is UserUiState.Success -> { navController?.navigate(Screen.CHATS.name) }
         is UserUiState.Error -> Toast.makeText(context, "Error occur ${userUiState.message}", Toast.LENGTH_SHORT).show()
         is UserUiState.Empty -> Log.e("RegistrationForm", "state is empty")
     }
@@ -226,7 +228,7 @@ private fun onThirdButtonClick(navController: NavController?) {
 @Composable
 fun RegistrationFormPreview() {
     ChatSampleTheme {
-        RegistrationForm(UserUiState.Empty) { name, paw ->
+        RegistrationForm(UserUiState.Empty, null) { name, paw ->
             Log.e("Registreion form", "$name and $paw")
         }
     }

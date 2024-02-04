@@ -7,11 +7,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.chatsample.presentation.di.ViewModelFactory
-import com.example.chatsample.presentation.view.HomeScreenContent
-import com.example.chatsample.presentation.view.LoginScreenContent
-import com.example.chatsample.presentation.view.SignUpScreenContent
-import com.example.chatsample.presentation.viewmodels.HomeViewModel
+import com.example.chatsample.presentation.view.screens.ChatsAndContactsScreen
+import com.example.chatsample.presentation.view.screens.HomeScreenContent
+import com.example.chatsample.presentation.view.screens.LoginScreenContent
+import com.example.chatsample.presentation.view.screens.SignUpScreenContent
 import com.example.chatsample.presentation.viewmodels.LoginViewModel
+import com.example.chatsample.presentation.viewmodels.HomeViewModel
 import com.example.chatsample.presentation.viewmodels.SignupViewModel
 
 @Composable
@@ -53,6 +54,10 @@ fun AppNavHost(
                 )
                 LoginScreenContent(navController, loginViewModel)
             }
+        }
+
+        composable(NavigationItem.Chats.route) {
+            ChatsAndContactsScreen()
         }
     }
 }
