@@ -1,14 +1,14 @@
 package com.example.chatsample.domain.di
 
 import com.example.chatsample.domain.repository.IUserRepository
-import com.example.chatsample.domain.usecase.CheckUsernameUseCase
-import com.example.chatsample.domain.usecase.CreateUserUseCase
-import com.example.chatsample.domain.usecase.ICheckUsernameUseCase
-import com.example.chatsample.domain.usecase.ICreateUserUseCase
+import com.example.chatsample.domain.usecase.login.CheckUsernameUseCase
+import com.example.chatsample.domain.usecase.login.CreateUserUseCase
+import com.example.chatsample.domain.usecase.login.ICheckUsernameUseCase
+import com.example.chatsample.domain.usecase.login.ICreateUserUseCase
 import com.example.chatsample.domain.usecase.IIsUserLoggedInUseCase
-import com.example.chatsample.domain.usecase.ILoginUseCase
+import com.example.chatsample.domain.usecase.login.ILoginUseCase
 import com.example.chatsample.domain.usecase.IsUserLoggedInUseCase
-import com.example.chatsample.domain.usecase.LoginUseCase
+import com.example.chatsample.domain.usecase.login.LoginUseCase
 import dagger.Module
 import dagger.Provides
 

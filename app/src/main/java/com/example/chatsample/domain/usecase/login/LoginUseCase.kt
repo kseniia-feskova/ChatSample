@@ -1,4 +1,4 @@
-package com.example.chatsample.domain.usecase
+package com.example.chatsample.domain.usecase.login
 
 import com.example.chatsample.data.utils.encrypt
 import com.example.chatsample.domain.model.UserUI

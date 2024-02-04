@@ -36,6 +36,7 @@ import com.example.chatsample.presentation.view.utils.FloatingButtonContent
 @Composable
 fun ChatsAndContactsScreen() {
     //val listOfContacts = viewModel.getAllUsersWithoutMe(name)
+    //val listOfChats = viewModel.getAllChats()
     var isDrawerVisible by remember { mutableStateOf(DrawerValue.Closed) }
     fun changeDrawerVisibility() {
         isDrawerVisible = if (isDrawerVisible == DrawerValue.Open) DrawerValue.Closed

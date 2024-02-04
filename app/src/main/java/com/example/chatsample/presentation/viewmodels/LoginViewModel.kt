@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatsample.domain.model.UserUI
-import com.example.chatsample.domain.usecase.ILoginUseCase
+import com.example.chatsample.domain.usecase.login.ILoginUseCase
 import com.example.chatsample.presentation.model.UserUiState
 import kotlinx.coroutines.launch
 import java.io.IOException

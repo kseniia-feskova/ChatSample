@@ -2,10 +2,10 @@ package com.example.chatsample.presentation.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.chatsample.domain.usecase.ICheckUsernameUseCase
-import com.example.chatsample.domain.usecase.ICreateUserUseCase
+import com.example.chatsample.domain.usecase.login.ICheckUsernameUseCase
+import com.example.chatsample.domain.usecase.login.ICreateUserUseCase
 import com.example.chatsample.domain.usecase.IIsUserLoggedInUseCase
-import com.example.chatsample.domain.usecase.ILoginUseCase
+import com.example.chatsample.domain.usecase.login.ILoginUseCase
 import com.example.chatsample.presentation.viewmodels.HomeViewModel
 import com.example.chatsample.presentation.viewmodels.LoginViewModel
 import com.example.chatsample.presentation.viewmodels.SignupViewModel
