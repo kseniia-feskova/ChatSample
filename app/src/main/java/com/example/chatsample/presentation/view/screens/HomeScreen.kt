@@ -22,8 +22,7 @@ import com.example.chatsample.presentation.viewmodels.HomeViewModel
 @Composable
 fun HomeScreenContent(navController: NavController? = null, viewModel: HomeViewModel) {
     if (viewModel.isUserLoggedIn()) {
-        //TODO change to chats
-        navController?.navigate(Screen.SIGNUP.name)
+        navController?.navigate(Screen.CHATS.name)
     } else {
         MainHomeScreenContent(navController)
     }
