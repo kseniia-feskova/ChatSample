@@ -17,9 +17,20 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.chatsample.presentation.navigation.Screen
 import com.example.chatsample.presentation.ui.theme.ChatSampleTheme
+import com.example.chatsample.presentation.viewmodels.HomeViewModel
 
 @Composable
-fun HomeScreenContent(navController: NavController? = null) {
+fun HomeScreenContent(navController: NavController? = null, viewModel: HomeViewModel) {
+    if (viewModel.isUserLoggedIn()) {
+        //TODO change to chats
+        navController?.navigate(Screen.SIGNUP.name)
+    } else {
+        MainHomeScreenContent(navController)
+    }
+}
+
+@Composable
+fun MainHomeScreenContent(navController: NavController? = null) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
@@ -30,7 +41,9 @@ fun HomeScreenContent(navController: NavController? = null) {
                 .padding(12.dp),
         ) {
             Text(
-                modifier = Modifier.align(Alignment.CenterHorizontally).padding(vertical = 8.dp),
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(vertical = 8.dp),
                 text = "Hello",
                 style = MaterialTheme.typography.headlineMedium,
                 color = Color(10, 10, 100)
@@ -75,6 +88,6 @@ fun HomeScreenContent(navController: NavController? = null) {
 @Composable
 fun HomeScreenContentPreview() {
     ChatSampleTheme {
-        HomeScreenContent()
+        MainHomeScreenContent()
     }
 }

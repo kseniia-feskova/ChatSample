@@ -12,6 +12,7 @@ import com.example.chatsample.presentation.view.screens.HomeScreenContent
 import com.example.chatsample.presentation.view.screens.LoginScreenContent
 import com.example.chatsample.presentation.view.screens.SignUpScreenContent
 import com.example.chatsample.presentation.viewmodels.LoginViewModel
+import com.example.chatsample.presentation.viewmodels.HomeViewModel
 import com.example.chatsample.presentation.viewmodels.SignupViewModel
 
 @Composable
@@ -24,9 +25,15 @@ fun AppNavHost(
         navController = navController,
         startDestination = startDestination
     ) {
-
         composable(NavigationItem.Home.route) {
-            HomeScreenContent(navController)
+            val localViewModelStoreOwner = LocalViewModelStoreOwner.current
+            if (localViewModelStoreOwner != null) {
+                val homeViewModel: HomeViewModel = viewModel(
+                    viewModelStoreOwner = localViewModelStoreOwner,
+                    factory = viewModelFactory
+                )
+                HomeScreenContent(navController, homeViewModel)
+            }
         }
         composable(NavigationItem.Signup.route) {
             val localViewModelStoreOwner = LocalViewModelStoreOwner.current
