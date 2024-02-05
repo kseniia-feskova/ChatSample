@@ -26,6 +26,7 @@ import androidx.navigation.NavController
 import com.example.chatsample.domain.model.ChatUI
 import com.example.chatsample.presentation.navigation.Screen
 import com.example.chatsample.presentation.ui.theme.ChatSampleTheme
+import com.google.firebase.Timestamp
 
 
 @Composable
@@ -95,8 +96,7 @@ fun UnreadIndicator() {
 fun ChatPreviewItemPreview() {
     ChatSampleTheme {
         ChatPreviewItem(
-            ChatUI(
-                "Kseniia", "Hello, my friend it's me", false
+            ChatUI("0", "Kseniia", "Hello, my friend it's me", false, Timestamp(0, 0)
             )
         )
     }

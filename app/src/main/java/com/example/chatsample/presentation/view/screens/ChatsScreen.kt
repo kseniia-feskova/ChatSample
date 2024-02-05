@@ -1,5 +1,6 @@
 package com.example.chatsample.presentation.view.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -25,20 +27,27 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.chatsample.domain.model.ChatUI
+import com.example.chatsample.presentation.model.ChatsListState
 import com.example.chatsample.presentation.navigation.Screen
 import com.example.chatsample.presentation.ui.theme.ChatSampleTheme
 import com.example.chatsample.presentation.view.ChatPreviewItem
 import com.example.chatsample.presentation.view.utils.BottomDrawerContent
 import com.example.chatsample.presentation.view.utils.FloatingButtonContent
+import com.example.chatsample.presentation.viewmodels.ChatsViewModel
 
 @Composable
-fun ChatsAndContactsScreen(navController: NavController? = null) {
-    //val listOfContacts = viewModel.getAllUsersWithoutMe(name)
-    //val listOfChats = viewModel.getAllChats()
+fun ChatsAndContactsScreen(viewModel: ChatsViewModel, navController: NavController? = null) {
+    viewModel.callAllChats()
+    ChatsAndContacts(navController, viewModel.listOfChats)
+}
+
+@Composable
+fun ChatsAndContacts(navController: NavController? = null, listOfChats: ChatsListState) {
     var isDrawerVisible by remember { mutableStateOf(DrawerValue.Closed) }
     fun changeDrawerVisibility() {
         isDrawerVisible = if (isDrawerVisible == DrawerValue.Open) DrawerValue.Closed
@@ -46,14 +55,31 @@ fun ChatsAndContactsScreen(navController: NavController? = null) {
     }
     Box() {
         Scaffold(
-            floatingActionButton = {
-                if (isDrawerVisible == DrawerValue.Closed) {
-                    ChatsFloatingButton() { changeDrawerVisibility() }
-                }
-            },
-            floatingActionButtonPosition = FabPosition.End,
+            floatingActionButton = { if (isDrawerVisible == DrawerValue.Closed) { ChatsFloatingButton() { changeDrawerVisibility() } } },
+            floatingActionButtonPosition = handleFabPosition(listOfChats),
             content = { paddings ->
-                ChatsScreenContent(paddings, isDrawerVisible, navController)
+                when (listOfChats) {
+                    is ChatsListState.Success -> {
+                        if (listOfChats.chats.isEmpty()) {
+                            EmptyListMessage()
+                        } else {
+                            ChatsScreenContent(
+                                listOfChats.chats,
+                                paddings,
+                                isDrawerVisible,
+                                navController
+                            )
+                        }
+                    }
+
+                    is ChatsListState.Loading -> {
+                        Log.e("RegistrationForm", "Loading")
+                    }
+
+                    is ChatsListState.Error -> {
+                        ErrorMessage()
+                    }
+                }
             }
         )
         if (isDrawerVisible == DrawerValue.Open) {
@@ -64,6 +90,42 @@ fun ChatsAndContactsScreen(navController: NavController? = null) {
                 navController = navController,
             ) { changeDrawerVisibility() }
         }
+    }
+}
+
+private fun handleFabPosition(listOfChats: ChatsListState): FabPosition {
+    return if (listOfChats is ChatsListState.Success) {
+        if (listOfChats.chats.isEmpty()) FabPosition.Center else FabPosition.End
+    } else FabPosition.End
+}
+
+@Composable
+fun EmptyListMessage() {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Text(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .wrapContentSize(),
+            textAlign = TextAlign.Center,
+            text = "There is no chats for you.\nPlease, click on button to create your first chat",
+            style = MaterialTheme.typography.labelLarge,
+            color = Color(10, 10, 100)
+        )
+    }
+}
+
+@Composable
+fun ErrorMessage() {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Text(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .wrapContentSize(),
+            textAlign = TextAlign.Center,
+            text = "There is internal error",
+            style = MaterialTheme.typography.labelLarge,
+            color = Color(10, 10, 100)
+        )
     }
 }
 
@@ -103,6 +165,7 @@ fun ContactsDrawer(
 
 @Composable
 fun ChatsScreenContent(
+    listOfChats: List<ChatUI>,
     paddings: PaddingValues,
     isDrawerVisible: DrawerValue,
     navController: NavController? = null
@@ -118,7 +181,7 @@ fun ChatsScreenContent(
                 .align(Alignment.TopCenter)
                 .padding(12.dp),
         ) {
-            VerticalRecyclerView(listOfTestChats.sortedBy { it.isRead }, navController)
+            VerticalRecyclerView(listOfChats.sortedBy { it.isRead }, navController)
         }
         if (isDrawerVisible == DrawerValue.Open) {
             Box(
@@ -139,26 +202,10 @@ fun VerticalRecyclerView(items: List<ChatUI>, navController: NavController? = nu
     }
 }
 
-private val listOfTestChats = listOf(
-    ChatUI("Kseniia", "My first kiss was with someOne special", false),
-    ChatUI("Jugineee", "Hello, mario", true),
-    ChatUI("Luigui", "Hi, it's me", true),
-    ChatUI("Kseniia", "My first kiss was with someOne special", true),
-    ChatUI("Jugineee", "Hello, mario", true),
-    ChatUI("Luigui", "Hi, it's me", true),
-    ChatUI("Kseniia", "My first kiss was with someOne special", false),
-    ChatUI("Jugineee", "Hello, mario", true),
-    ChatUI("Luigui", "Hi, it's me", true),
-    ChatUI("Luigui", "Hi, it's me", false),
-    ChatUI("Kseniia", "My first kiss was with someOne special", true),
-    ChatUI("Jugineee", "Hello, mario", true),
-    ChatUI("Luigui", "Hi, it's me", true)
-)
-
 @Preview(showBackground = true)
 @Composable
 fun ChatsScreenContentPreview() {
     ChatSampleTheme {
-        ChatsAndContactsScreen()
+        ChatsAndContacts(listOfChats = ChatsListState.Success(emptyList()))
     }
 }

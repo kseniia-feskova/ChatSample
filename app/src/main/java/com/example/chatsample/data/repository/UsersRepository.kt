@@ -20,7 +20,7 @@ class UsersRepository @Inject constructor(private val usersPreferences: UserPref
     }
 
     override suspend fun setUser(user: UserData) {
-        collection.add(user).await()
+        collection.document(user.id).set(user).await()
     }
 
     override suspend fun checkFreeName(name: String): Boolean {

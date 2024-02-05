@@ -12,8 +12,9 @@ import com.example.chatsample.presentation.view.screens.ChatsAndContactsScreen
 import com.example.chatsample.presentation.view.screens.HomeScreenContent
 import com.example.chatsample.presentation.view.screens.LoginScreenContent
 import com.example.chatsample.presentation.view.screens.SignUpScreenContent
-import com.example.chatsample.presentation.viewmodels.LoginViewModel
+import com.example.chatsample.presentation.viewmodels.ChatsViewModel
 import com.example.chatsample.presentation.viewmodels.HomeViewModel
+import com.example.chatsample.presentation.viewmodels.LoginViewModel
 import com.example.chatsample.presentation.viewmodels.SignupViewModel
 
 @Composable
@@ -58,7 +59,14 @@ fun AppNavHost(
         }
 
         composable(NavigationItem.Chats.route) {
-            ChatsAndContactsScreen(navController)
+            val localViewModelStoreOwner = LocalViewModelStoreOwner.current
+            if (localViewModelStoreOwner != null) {
+                val chatsViewModel: ChatsViewModel = viewModel(
+                    viewModelStoreOwner = localViewModelStoreOwner,
+                    factory = viewModelFactory
+                )
+                ChatsAndContactsScreen(chatsViewModel, navController)
+            }
         }
         composable(NavigationItem.Chat.route) {
             ChatScreen()

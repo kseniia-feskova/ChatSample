@@ -21,8 +21,7 @@ import com.google.firebase.firestore.DocumentId
 data class ChatData(
     @DocumentId
     val id: String = "",
-    val companionsIds: List<String> = emptyList(),
-    val lastMessageTimestamp: Timestamp = Timestamp(0, 0), //do we really need it there?
-    val lastMessageId: String = ""//do we really need it there?
+    val companions: List<String> = emptyList(),
+    val timestamp: Timestamp = Timestamp(0, 0)
 )
 
