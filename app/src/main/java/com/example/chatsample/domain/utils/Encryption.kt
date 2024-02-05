@@ -1,4 +1,4 @@
-package com.example.chatsample.data.utils
+package com.example.chatsample.domain.utils
 
 import java.util.*
 import javax.crypto.Cipher

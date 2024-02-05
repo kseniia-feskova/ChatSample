@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.chatsample.domain.model.ChatUI
 import com.example.chatsample.presentation.model.ChatsListState
+import com.example.chatsample.presentation.model.UsersListState
 import com.example.chatsample.presentation.navigation.Screen
 import com.example.chatsample.presentation.ui.theme.ChatSampleTheme
 import com.example.chatsample.presentation.view.ChatPreviewItem
@@ -43,11 +44,16 @@ import com.example.chatsample.presentation.viewmodels.ChatsViewModel
 @Composable
 fun ChatsAndContactsScreen(viewModel: ChatsViewModel, navController: NavController? = null) {
     viewModel.callAllChats()
-    ChatsAndContacts(navController, viewModel.listOfChats)
+    viewModel.callCompanions()
+    ChatsAndContacts(navController, viewModel.listOfChats, viewModel.listOfCompanions)
 }
 
 @Composable
-fun ChatsAndContacts(navController: NavController? = null, listOfChats: ChatsListState) {
+fun ChatsAndContacts(
+    navController: NavController? = null,
+    listOfChats: ChatsListState,
+    listOfCompanions: UsersListState
+) {
     var isDrawerVisible by remember { mutableStateOf(DrawerValue.Closed) }
     fun changeDrawerVisibility() {
         isDrawerVisible = if (isDrawerVisible == DrawerValue.Open) DrawerValue.Closed
@@ -88,6 +94,7 @@ fun ChatsAndContacts(navController: NavController? = null, listOfChats: ChatsLis
                     .align(Alignment.BottomCenter)
                     .wrapContentHeight(),
                 navController = navController,
+                listOfCompanions = listOfCompanions
             ) { changeDrawerVisibility() }
         }
     }
@@ -141,26 +148,30 @@ fun ChatsFloatingButton(onClick: () -> Unit) {
 
 @Composable
 fun ContactsDrawer(
-    modifier: Modifier, navController: NavController? = null, onCLose: () -> Unit
+    modifier: Modifier,
+    navController: NavController? = null,
+    listOfCompanions: UsersListState,
+    onCLose: () -> Unit
 ) {
-    BottomDrawerContent(
-        modifier = modifier,
-        items = listOf("Selectial", "Cortney", "Fibie", "Ross", "Qwerty", "Poiuyt"),
-        onClose = { onCLose() },
-        itemView = {
-            Text(
-                text = "- $it",
-                modifier = Modifier
-                    .padding(8.dp)
-                    .clickable {
-                        navController?.navigate(Screen.CHAT.name)
-                    },
-                color = Color(10, 10, 100),
-                style = MaterialTheme.typography.labelMedium,
-
+    if (listOfCompanions is UsersListState.Success) {
+        BottomDrawerContent(
+            modifier = modifier,
+            items = listOfCompanions.chats,
+            onClose = { onCLose() },
+            itemView = {
+                Text(
+                    text = "- ${it.name}",
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .clickable {
+                            navController?.navigate(Screen.CHAT.name)
+                        },
+                    color = Color(10, 10, 100),
+                    style = MaterialTheme.typography.labelMedium,
                 )
-        }
-    )
+            }
+        )
+    }
 }
 
 @Composable
@@ -206,6 +217,9 @@ fun VerticalRecyclerView(items: List<ChatUI>, navController: NavController? = nu
 @Composable
 fun ChatsScreenContentPreview() {
     ChatSampleTheme {
-        ChatsAndContacts(listOfChats = ChatsListState.Success(emptyList()))
+        ChatsAndContacts(
+            listOfChats = ChatsListState.Success(emptyList()),
+            listOfCompanions = UsersListState.Success(emptyList())
+        )
     }
 }

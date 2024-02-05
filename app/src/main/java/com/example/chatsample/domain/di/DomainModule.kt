@@ -6,8 +6,10 @@ import com.example.chatsample.domain.repository.IUserRepository
 import com.example.chatsample.domain.usecase.IIsUserLoggedInUseCase
 import com.example.chatsample.domain.usecase.IsUserLoggedInUseCase
 import com.example.chatsample.domain.usecase.chat.GetAllChatsUseCase
+import com.example.chatsample.domain.usecase.chat.GetCompanionsUseCase
 import com.example.chatsample.domain.usecase.chat.GetListOfMessagesUseCase
 import com.example.chatsample.domain.usecase.chat.IGetAllChatsUseCase
+import com.example.chatsample.domain.usecase.chat.IGetCompanionsUseCase
 import com.example.chatsample.domain.usecase.chat.IGetListOfMessagesUseCase
 import com.example.chatsample.domain.usecase.login.CheckUsernameUseCase
 import com.example.chatsample.domain.usecase.login.CreateUserUseCase
@@ -55,5 +57,12 @@ class DomainModule {
         messagesRepository: IMessagesRepository
     ): IGetListOfMessagesUseCase {
         return GetListOfMessagesUseCase(userRepository, messagesRepository)
+    }
+
+    @Provides
+    fun provideGetCompanionsUseCase(
+        userRepository: IUserRepository,
+    ): IGetCompanionsUseCase {
+        return GetCompanionsUseCase(userRepository)
     }
 }

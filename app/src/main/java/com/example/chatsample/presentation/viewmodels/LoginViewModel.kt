@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.chatsample.domain.model.UserUI
+import com.example.chatsample.domain.model.RegistrationUI
 import com.example.chatsample.domain.usecase.login.ILoginUseCase
 import com.example.chatsample.presentation.model.UserUiState
 import kotlinx.coroutines.launch
@@ -23,7 +23,7 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             userCheck = UserUiState.Loading
             userCheck = try {
-                val isLogin = login.invoke(UserUI(name, password))
+                val isLogin = login.invoke(RegistrationUI(name, password))
                 if (isLogin) UserUiState.Success
                 else UserUiState.Error("Cannot login")
 

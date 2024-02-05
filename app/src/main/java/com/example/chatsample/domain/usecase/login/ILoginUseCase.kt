@@ -1,8 +1,8 @@
 package com.example.chatsample.domain.usecase.login
 
-import com.example.chatsample.domain.model.UserUI
+import com.example.chatsample.domain.model.RegistrationUI
 
 interface ILoginUseCase {
-    suspend operator fun invoke(user: UserUI): Boolean
+    suspend operator fun invoke(user: RegistrationUI): Boolean
 
 }

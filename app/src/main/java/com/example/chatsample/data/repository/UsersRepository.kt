@@ -1,7 +1,6 @@
 package com.example.chatsample.data.repository
 
 import com.example.chatsample.data.prefs.UserPreferences
-import com.example.chatsample.data.utils.encrypt
 import com.example.chatsample.domain.model.UserData
 import com.example.chatsample.domain.repository.IUserRepository
 import com.google.firebase.firestore.FirebaseFirestore
@@ -24,7 +23,7 @@ class UsersRepository @Inject constructor(private val usersPreferences: UserPref
     }
 
     override suspend fun checkFreeName(name: String): Boolean {
-        val users = collection.whereEqualTo("name", encrypt(name)).get().await().documents
+        val users = collection.whereEqualTo("name", name).get().await().documents
         return users.isEmpty()
     }
 
@@ -42,5 +41,13 @@ class UsersRepository @Inject constructor(private val usersPreferences: UserPref
 
     override fun getLoggedId(): String {
         return usersPreferences.loggedId
+    }
+
+    override suspend fun getNewCompanions(): List<UserData> {
+        val documents = collection.get().await().documents.filter { it.id != getLoggedId() }
+        val currentChats = getUserOrNull(getLoggedId())?.chats?.keys
+        return if (documents.isEmpty()) emptyList()
+        else documents.mapNotNull { it.toObject(UserData::class.java) }
+            .filter { !it.chats.keys.any { currentChats?.contains(it) == true } }
     }
 }

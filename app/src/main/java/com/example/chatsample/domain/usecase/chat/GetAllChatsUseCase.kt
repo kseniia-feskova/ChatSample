@@ -1,7 +1,7 @@
 package com.example.chatsample.domain.usecase.chat
 
 import android.util.Log
-import com.example.chatsample.data.utils.decrypt
+import com.example.chatsample.domain.utils.decrypt
 import com.example.chatsample.domain.model.ChatData
 import com.example.chatsample.domain.model.ChatUI
 import com.example.chatsample.domain.repository.IChatsRepository
