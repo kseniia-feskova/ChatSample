@@ -14,12 +14,20 @@ class ChatsRepository : IChatsRepository {
         return collection.document(chatId)
     }
 
+    override suspend fun createChat(chat: ChatData) {
+        collection.document(chat.id).set(chat).await()
+    }
+
     override suspend fun getAllChatsForUser(userId: String): List<ChatData> {
-        val documents =
-            collection.whereArrayContains("companions", userId).get().await().documents
+        val documents = collection.whereArrayContains("companions", userId).get().await().documents
         return if (documents.isNotEmpty()) documents.mapNotNull {
             it.toObject(ChatData::class.java)
         } else emptyList()
+    }
+
+    override suspend fun addNewMessage(chatId: String, message: MessageData) {
+        getChatDocument(chatId).collection("messages").document(message.id).set(message).await()
+        getChatDocument(chatId).update("timestamp", message.timestamp)
     }
 
     override suspend fun getLastMessage(chatId: String): MessageData? {

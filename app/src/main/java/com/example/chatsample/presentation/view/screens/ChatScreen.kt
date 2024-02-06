@@ -43,7 +43,12 @@ import com.example.chatsample.presentation.ui.theme.WhiteBlue
 import com.google.firebase.Timestamp
 
 @Composable
-fun ChatScreen() {
+fun ChatScreen(chatId: String, userId: String) {
+
+    if (chatId.isNotEmpty()) {
+        //setInViewModel
+    }
+
     val items = testMessages.sortedBy { it.timestamp }
     var messageText by remember { mutableStateOf("") }
 
@@ -80,7 +85,7 @@ fun ChatScreen() {
             trailingIcon = {
                 IconButton(
                     modifier = Modifier.padding(0.dp),
-                    onClick = { }) {
+                    onClick = { /*sendmessage */ }) {
                     Icon(
                         imageVector = Icons.Filled.PlayArrow,
                         modifier = Modifier
@@ -92,6 +97,14 @@ fun ChatScreen() {
                 }
             }
         )
+    }
+}
+
+private fun sendMessage(text: String, chatId: String) {
+    if (chatId.isNotEmpty()) {
+        //sendMessage(text)
+    } else {
+        //createChatAndSendMessage(text, userId)
     }
 }
 
@@ -202,7 +215,7 @@ val Int.percentWidth: Dp
 @Composable
 fun ChatScreenPreview() {
     ChatSampleTheme {
-        ChatScreen()
+        ChatScreen("", "")
     }
 }
 

@@ -13,6 +13,11 @@ import javax.inject.Inject
 class MessagesRepository @Inject constructor(
     private val chatsRepository: IChatsRepository
 ) : IMessagesRepository {
+
+    override suspend fun addMessageToChat(chatId: String, message: MessageData) {
+        chatsRepository.addNewMessage(chatId, message)
+    }
+
     override fun listenNewMessages(chatId: String): Flow<List<MessageData>> = callbackFlow {
         val listener = chatsRepository.getChatDocument(chatId).collection("messages")
             .addSnapshotListener { snapshot, error ->
@@ -20,9 +25,10 @@ class MessagesRepository @Inject constructor(
                     close(error)
                     return@addSnapshotListener
                 }
-                val messages =
-                    snapshot?.documents?.mapNotNull { doc -> doc.toObject(MessageData::class.java) }
-                        ?: emptyList()
+                val messages = snapshot?.documents?.
+                mapNotNull { doc ->
+                    doc.toObject(MessageData::class.java)
+                } ?: emptyList()
                 this.trySend(messages).isSuccess
             }
 

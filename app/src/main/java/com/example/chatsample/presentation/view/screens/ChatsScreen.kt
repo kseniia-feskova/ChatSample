@@ -32,8 +32,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.chatsample.domain.model.ChatUI
-import com.example.chatsample.presentation.model.ChatsListState
-import com.example.chatsample.presentation.model.UsersListState
+import com.example.chatsample.domain.model.UserUI
+import com.example.chatsample.presentation.model.LoadListState
 import com.example.chatsample.presentation.navigation.Screen
 import com.example.chatsample.presentation.ui.theme.ChatSampleTheme
 import com.example.chatsample.presentation.view.ChatPreviewItem
@@ -51,8 +51,8 @@ fun ChatsAndContactsScreen(viewModel: ChatsViewModel, navController: NavControll
 @Composable
 fun ChatsAndContacts(
     navController: NavController? = null,
-    listOfChats: ChatsListState,
-    listOfCompanions: UsersListState
+    listOfChats: LoadListState<ChatUI>,
+    listOfCompanions: LoadListState<UserUI>
 ) {
     var isDrawerVisible by remember { mutableStateOf(DrawerValue.Closed) }
     fun changeDrawerVisibility() {
@@ -61,16 +61,20 @@ fun ChatsAndContacts(
     }
     Box() {
         Scaffold(
-            floatingActionButton = { if (isDrawerVisible == DrawerValue.Closed) { ChatsFloatingButton() { changeDrawerVisibility() } } },
+            floatingActionButton = {
+                if (isDrawerVisible == DrawerValue.Closed) {
+                    ChatsFloatingButton() { changeDrawerVisibility() }
+                }
+            },
             floatingActionButtonPosition = handleFabPosition(listOfChats),
             content = { paddings ->
                 when (listOfChats) {
-                    is ChatsListState.Success -> {
-                        if (listOfChats.chats.isEmpty()) {
+                    is LoadListState.Success -> {
+                        if (listOfChats.list.isEmpty()) {
                             EmptyListMessage()
                         } else {
                             ChatsScreenContent(
-                                listOfChats.chats,
+                                listOfChats.list,
                                 paddings,
                                 isDrawerVisible,
                                 navController
@@ -78,11 +82,11 @@ fun ChatsAndContacts(
                         }
                     }
 
-                    is ChatsListState.Loading -> {
+                    is LoadListState.Loading -> {
                         Log.e("RegistrationForm", "Loading")
                     }
 
-                    is ChatsListState.Error -> {
+                    is LoadListState.Error -> {
                         ErrorMessage()
                     }
                 }
@@ -100,9 +104,9 @@ fun ChatsAndContacts(
     }
 }
 
-private fun handleFabPosition(listOfChats: ChatsListState): FabPosition {
-    return if (listOfChats is ChatsListState.Success) {
-        if (listOfChats.chats.isEmpty()) FabPosition.Center else FabPosition.End
+private fun handleFabPosition(listOfChats: LoadListState<ChatUI>): FabPosition {
+    return if (listOfChats is LoadListState.Success) {
+        if (listOfChats.list.isEmpty()) FabPosition.Center else FabPosition.End
     } else FabPosition.End
 }
 
@@ -150,13 +154,13 @@ fun ChatsFloatingButton(onClick: () -> Unit) {
 fun ContactsDrawer(
     modifier: Modifier,
     navController: NavController? = null,
-    listOfCompanions: UsersListState,
+    listOfCompanions: LoadListState<UserUI>,
     onCLose: () -> Unit
 ) {
-    if (listOfCompanions is UsersListState.Success) {
+    if (listOfCompanions is LoadListState.Success) {
         BottomDrawerContent(
             modifier = modifier,
-            items = listOfCompanions.chats,
+            items = listOfCompanions.list,
             onClose = { onCLose() },
             itemView = {
                 Text(
@@ -218,8 +222,8 @@ fun VerticalRecyclerView(items: List<ChatUI>, navController: NavController? = nu
 fun ChatsScreenContentPreview() {
     ChatSampleTheme {
         ChatsAndContacts(
-            listOfChats = ChatsListState.Success(emptyList()),
-            listOfCompanions = UsersListState.Success(emptyList())
+            listOfChats = LoadListState.Success(emptyList()),
+            listOfCompanions = LoadListState.Success(emptyList())
         )
     }
 }

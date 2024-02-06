@@ -6,10 +6,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.chatsample.domain.model.ChatUI
+import com.example.chatsample.domain.model.UserUI
 import com.example.chatsample.domain.usecase.chat.IGetAllChatsUseCase
 import com.example.chatsample.domain.usecase.chat.IGetCompanionsUseCase
-import com.example.chatsample.presentation.model.ChatsListState
-import com.example.chatsample.presentation.model.UsersListState
+import com.example.chatsample.presentation.model.LoadListState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,9 +18,9 @@ class ChatsViewModel @Inject constructor(
     private val getAllChatsUseCase: IGetAllChatsUseCase,
     private val getCompanionsUseCase: IGetCompanionsUseCase
 ) : ViewModel() {
-    var listOfChats: ChatsListState by mutableStateOf(ChatsListState.Loading)
+    var listOfChats: LoadListState<ChatUI> by mutableStateOf(LoadListState.Loading)
         private set
-    var listOfCompanions: UsersListState by mutableStateOf(UsersListState.Loading)
+    var listOfCompanions: LoadListState<UserUI> by mutableStateOf(LoadListState.Loading)
         private set
 
     fun callAllChats() {
@@ -27,9 +28,9 @@ class ChatsViewModel @Inject constructor(
             listOfChats = try {
                 val chats = getAllChatsUseCase.invoke()
                 Log.e("ChatsViewModel", "chats = $chats")
-                ChatsListState.Success(chats)
+                LoadListState.Success(chats)
             } catch (e: Exception) {
-                ChatsListState.Error("Cannot callAllChats, ${e.message}")
+                LoadListState.Error("Cannot callAllChats, ${e.message}")
             }
         }
     }
@@ -39,9 +40,9 @@ class ChatsViewModel @Inject constructor(
             listOfCompanions = try {
                 val companions = getCompanionsUseCase.invoke()
                 Log.e("ChatsViewModel", "companions = $companions")
-                UsersListState.Success(companions)
+                LoadListState.Success(companions)
             } catch (e: Exception) {
-                UsersListState.Error("Cannot callCompanions, ${e.message}")
+                LoadListState.Error("Cannot callCompanions, ${e.message}")
             }
         }
     }

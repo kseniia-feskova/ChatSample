@@ -6,6 +6,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.chatsample.presentation.di.ViewModelFactory
 import com.example.chatsample.presentation.view.screens.ChatScreen
 import com.example.chatsample.presentation.view.screens.ChatsAndContactsScreen
@@ -68,8 +69,17 @@ fun AppNavHost(
                 ChatsAndContactsScreen(chatsViewModel, navController)
             }
         }
-        composable(NavigationItem.Chat.route) {
-            ChatScreen()
+
+        composable(
+            "${NavigationItem.Chat.route}?chatId={chatId}?companionId={companionId}",
+            arguments = listOf(
+                navArgument("chatId") { defaultValue = "" },
+                navArgument("companionId") { defaultValue = "" })
+        ) { backStackEntry ->
+            ChatScreen(
+                backStackEntry.arguments?.getString("chatId")?:"",
+                backStackEntry.arguments?.getString("companionId")?:"",
+            )
         }
     }
 }
