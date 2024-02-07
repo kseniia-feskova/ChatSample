@@ -7,6 +7,8 @@ interface IUserRepository {
     suspend fun setUser(user: UserData)
     suspend fun checkFreeName(name: String): Boolean
     suspend fun getUserByName(name: String): UserData?
+    suspend fun getNewCompanions(): List<UserData>
+    suspend fun updateUnreadChat(userId: String? = null, chatId: String, isRead: Boolean)
     fun saveUsersIdLocally(id: String)
     fun getLoggedId(): String
 }

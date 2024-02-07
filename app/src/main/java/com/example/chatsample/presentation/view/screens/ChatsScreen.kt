@@ -1,6 +1,8 @@
 package com.example.chatsample.presentation.view.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -24,18 +27,33 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.chatsample.domain.model.ChatUI
-import com.example.chatsample.presentation.ui.theme.ChatSampleTheme
+import com.example.chatsample.domain.model.UserUI
+import com.example.chatsample.presentation.model.LoadListState
+import com.example.chatsample.presentation.navigation.Screen
+import com.example.chatsample.presentation.view.ui.theme.ChatSampleTheme
 import com.example.chatsample.presentation.view.ChatPreviewItem
 import com.example.chatsample.presentation.view.utils.BottomDrawerContent
 import com.example.chatsample.presentation.view.utils.FloatingButtonContent
+import com.example.chatsample.presentation.viewmodels.ChatsViewModel
 
 @Composable
-fun ChatsAndContactsScreen() {
-    //val listOfContacts = viewModel.getAllUsersWithoutMe(name)
+fun ChatsAndContactsScreen(viewModel: ChatsViewModel, navController: NavController? = null) {
+    viewModel.callAllChats()
+    viewModel.callCompanions()
+    ChatsAndContacts(navController, viewModel.listOfChats, viewModel.listOfCompanions)
+}
+
+@Composable
+fun ChatsAndContacts(
+    navController: NavController? = null,
+    listOfChats: LoadListState<ChatUI>,
+    listOfCompanions: LoadListState<UserUI>
+) {
     var isDrawerVisible by remember { mutableStateOf(DrawerValue.Closed) }
     fun changeDrawerVisibility() {
         isDrawerVisible = if (isDrawerVisible == DrawerValue.Open) DrawerValue.Closed
@@ -48,9 +66,30 @@ fun ChatsAndContactsScreen() {
                     ChatsFloatingButton() { changeDrawerVisibility() }
                 }
             },
-            floatingActionButtonPosition = FabPosition.End,
+            floatingActionButtonPosition = handleFabPosition(listOfChats),
             content = { paddings ->
-                ChatsScreenContent(paddings, isDrawerVisible)
+                when (listOfChats) {
+                    is LoadListState.Success -> {
+                        if (listOfChats.list.isEmpty()) {
+                            EmptyListMessage()
+                        } else {
+                            ChatsScreenContent(
+                                listOfChats.list,
+                                paddings,
+                                isDrawerVisible,
+                                navController
+                            )
+                        }
+                    }
+
+                    is LoadListState.Loading -> {
+                        Log.e("RegistrationForm", "Loading")
+                    }
+
+                    is LoadListState.Error -> {
+                        ErrorMessage()
+                    }
+                }
             }
         )
         if (isDrawerVisible == DrawerValue.Open) {
@@ -58,8 +97,46 @@ fun ChatsAndContactsScreen() {
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .wrapContentHeight(),
+                navController = navController,
+                listOfCompanions = listOfCompanions
             ) { changeDrawerVisibility() }
         }
+    }
+}
+
+private fun handleFabPosition(listOfChats: LoadListState<ChatUI>): FabPosition {
+    return if (listOfChats is LoadListState.Success) {
+        if (listOfChats.list.isEmpty()) FabPosition.Center else FabPosition.End
+    } else FabPosition.End
+}
+
+@Composable
+fun EmptyListMessage() {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Text(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .wrapContentSize(),
+            textAlign = TextAlign.Center,
+            text = "There is no chats for you.\nPlease, click on button to create your first chat",
+            style = MaterialTheme.typography.labelLarge,
+            color = Color(10, 10, 100)
+        )
+    }
+}
+
+@Composable
+fun ErrorMessage() {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Text(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .wrapContentSize(),
+            textAlign = TextAlign.Center,
+            text = "There is internal error",
+            style = MaterialTheme.typography.labelLarge,
+            color = Color(10, 10, 100)
+        )
     }
 }
 
@@ -74,24 +151,36 @@ fun ChatsFloatingButton(onClick: () -> Unit) {
 }
 
 @Composable
-fun ContactsDrawer(modifier: Modifier, onCLose: () -> Unit) {
-    BottomDrawerContent(
-        modifier = modifier,
-        items = listOf("Selectial", "Cortney", "Fibie", "Ross", "Qwerty", "Poiuyt"),
-        onClose = { onCLose() },
-        itemView = {
-            Text(
-                text = "- $it",
-                modifier = Modifier.padding(8.dp),
-                color = Color(10, 10, 100),
-                style = MaterialTheme.typography.labelMedium
-            )
-        }
-    )
+fun ContactsDrawer(
+    modifier: Modifier,
+    navController: NavController? = null,
+    listOfCompanions: LoadListState<UserUI>,
+    onCLose: () -> Unit
+) {
+    if (listOfCompanions is LoadListState.Success) {
+        BottomDrawerContent(
+            modifier = modifier,
+            items = listOfCompanions.list,
+            onClose = { onCLose() },
+            itemView = {
+                Text(
+                    text = "- ${it.name}",
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .clickable {
+                            navController?.navigate("${Screen.CHAT.name}/${null}/${it.id}")
+                        },
+                    color = Color(10, 10, 100),
+                    style = MaterialTheme.typography.labelMedium,
+                )
+            }
+        )
+    }
 }
 
 @Composable
 fun ChatsScreenContent(
+    listOfChats: List<ChatUI>,
     paddings: PaddingValues,
     isDrawerVisible: DrawerValue,
     navController: NavController? = null
@@ -107,7 +196,7 @@ fun ChatsScreenContent(
                 .align(Alignment.TopCenter)
                 .padding(12.dp),
         ) {
-            VerticalRecyclerView(listOfTestChats.sortedBy { it.isRead })
+            VerticalRecyclerView(listOfChats.sortedBy { it.isRead }, navController)
         }
         if (isDrawerVisible == DrawerValue.Open) {
             Box(
@@ -120,34 +209,21 @@ fun ChatsScreenContent(
 }
 
 @Composable
-fun VerticalRecyclerView(items: List<ChatUI>) {
+fun VerticalRecyclerView(items: List<ChatUI>, navController: NavController? = null) {
     LazyColumn(contentPadding = PaddingValues(vertical = 8.dp)) {
         items(items = items) {
-            ChatPreviewItem(chat = it)
+            ChatPreviewItem(chat = it, navController = navController)
         }
     }
 }
-
-private val listOfTestChats = listOf(
-    ChatUI("Kseniia", "My first kiss was with someOne special", false),
-    ChatUI("Jugineee", "Hello, mario", true),
-    ChatUI("Luigui", "Hi, it's me", true),
-    ChatUI("Kseniia", "My first kiss was with someOne special", true),
-    ChatUI("Jugineee", "Hello, mario", true),
-    ChatUI("Luigui", "Hi, it's me", true),
-    ChatUI("Kseniia", "My first kiss was with someOne special", false),
-    ChatUI("Jugineee", "Hello, mario", true),
-    ChatUI("Luigui", "Hi, it's me", true),
-    ChatUI("Luigui", "Hi, it's me", false),
-    ChatUI("Kseniia", "My first kiss was with someOne special", true),
-    ChatUI("Jugineee", "Hello, mario", true),
-    ChatUI("Luigui", "Hi, it's me", true)
-)
 
 @Preview(showBackground = true)
 @Composable
 fun ChatsScreenContentPreview() {
     ChatSampleTheme {
-        ChatsAndContactsScreen()
+        ChatsAndContacts(
+            listOfChats = LoadListState.Success(emptyList()),
+            listOfCompanions = LoadListState.Success(emptyList())
+        )
     }
 }

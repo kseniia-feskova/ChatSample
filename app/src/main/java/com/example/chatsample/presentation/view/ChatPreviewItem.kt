@@ -1,6 +1,7 @@
 package com.example.chatsample.presentation.view
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,16 +22,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.chatsample.domain.model.ChatUI
-import com.example.chatsample.presentation.ui.theme.ChatSampleTheme
+import com.example.chatsample.presentation.navigation.NavigationItem
+import com.example.chatsample.presentation.view.ui.theme.ChatSampleTheme
+import com.google.firebase.Timestamp
 
 
 @Composable
-fun ChatPreviewItem(chat: ChatUI) {
+fun ChatPreviewItem(chat: ChatUI, navController: NavController? = null) {
     Card(
         modifier = Modifier
             .padding(horizontal = 8.dp, vertical = 8.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable {
+                navController?.navigate("${NavigationItem.Chat.route}/${chat.id}/${null}")
+            },
         colors = CardDefaults.cardColors(
             containerColor = Color(-2, -2, -1),
         ),
@@ -89,8 +96,7 @@ fun UnreadIndicator() {
 fun ChatPreviewItemPreview() {
     ChatSampleTheme {
         ChatPreviewItem(
-            ChatUI(
-                "Kseniia", "Hello, my friend it's me", false
+            ChatUI("0", "Kseniia", "Hello, my friend it's me", false, Timestamp(0, 0)
             )
         )
     }

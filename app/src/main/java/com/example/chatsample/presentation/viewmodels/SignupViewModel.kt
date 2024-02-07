@@ -5,9 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.chatsample.domain.model.UserUI
-import com.example.chatsample.domain.usecase.ICheckUsernameUseCase
-import com.example.chatsample.domain.usecase.ICreateUserUseCase
+import com.example.chatsample.domain.model.RegistrationUI
+import com.example.chatsample.domain.usecase.login.ICheckUsernameUseCase
+import com.example.chatsample.domain.usecase.login.ICreateUserUseCase
 import com.example.chatsample.presentation.model.UserUiState
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -40,7 +40,7 @@ class SignupViewModel @Inject constructor(
 
     private suspend fun createUser(name: String, password: String): UserUiState {
         return try {
-            val user = UserUI(name, password)
+            val user = RegistrationUI(name, password)
             createUser.invoke(user)
             UserUiState.Success
         } catch (e: IOException) {
