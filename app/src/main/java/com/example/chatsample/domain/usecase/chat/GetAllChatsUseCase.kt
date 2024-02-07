@@ -32,7 +32,7 @@ class GetAllChatsUseCase @Inject constructor(
         return ChatUI(
             id = chatData.id,
             author = companionName,
-            lastMessage = lastMessage?.text ?: "",
+            lastMessage = decrypt(lastMessage?.text ?: ""),
             isRead = currentChats,
             timestamp = lastMessage?.timestamp ?: Timestamp(0, 0)
         )

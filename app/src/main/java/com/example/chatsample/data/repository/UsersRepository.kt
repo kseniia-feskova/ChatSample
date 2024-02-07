@@ -1,5 +1,6 @@
 package com.example.chatsample.data.repository
 
+import android.util.Log
 import com.example.chatsample.data.prefs.UserPreferences
 import com.example.chatsample.domain.model.UserData
 import com.example.chatsample.domain.repository.IUserRepository
@@ -7,7 +8,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class UsersRepository @Inject constructor(private val usersPreferences: UserPreferences) : IUserRepository {
+class UsersRepository @Inject constructor(private val usersPreferences: UserPreferences) :
+    IUserRepository {
 
     private val collection = FirebaseFirestore.getInstance().collection("users")
     override suspend fun getUserOrNull(id: String): UserData? {
@@ -49,5 +51,18 @@ class UsersRepository @Inject constructor(private val usersPreferences: UserPref
         return if (documents.isEmpty()) emptyList()
         else documents.mapNotNull { it.toObject(UserData::class.java) }
             .filter { !it.chats.keys.any { currentChats?.contains(it) == true } }
+    }
+
+    override suspend fun updateUnreadChat(userId: String?, chatId: String, isRead: Boolean) {
+        val user = if (userId == null) {
+            getUserOrNull(getLoggedId())
+        } else getUserOrNull(userId)
+        if (user != null) {
+            val oldChats = user.chats.toMutableMap()
+            oldChats[chatId] = isRead
+            collection.document(user.id).update("chats", oldChats).addOnSuccessListener {
+                Log.e("updateUnreadChat", "for $chatId")
+            }.await()
+        }
     }
 }

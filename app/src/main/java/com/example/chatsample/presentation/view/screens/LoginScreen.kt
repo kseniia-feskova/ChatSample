@@ -41,11 +41,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.chatsample.presentation.model.UserUiState
 import com.example.chatsample.presentation.navigation.Screen
-import com.example.chatsample.presentation.ui.theme.Blue10
-import com.example.chatsample.presentation.ui.theme.Blue30
-import com.example.chatsample.presentation.ui.theme.Blue50
-import com.example.chatsample.presentation.ui.theme.ChatSampleTheme
-import com.example.chatsample.presentation.ui.theme.WhiteBlue
+import com.example.chatsample.presentation.view.ui.theme.Blue10
+import com.example.chatsample.presentation.view.ui.theme.Blue30
+import com.example.chatsample.presentation.view.ui.theme.Blue50
+import com.example.chatsample.presentation.view.ui.theme.ChatSampleTheme
+import com.example.chatsample.presentation.view.ui.theme.WhiteBlue
 import com.example.chatsample.presentation.viewmodels.LoginViewModel
 
 @Composable

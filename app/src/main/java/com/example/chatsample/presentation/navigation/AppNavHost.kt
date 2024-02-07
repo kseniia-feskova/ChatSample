@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
@@ -13,6 +14,7 @@ import com.example.chatsample.presentation.view.screens.ChatsAndContactsScreen
 import com.example.chatsample.presentation.view.screens.HomeScreenContent
 import com.example.chatsample.presentation.view.screens.LoginScreenContent
 import com.example.chatsample.presentation.view.screens.SignUpScreenContent
+import com.example.chatsample.presentation.viewmodels.ChatViewModel
 import com.example.chatsample.presentation.viewmodels.ChatsViewModel
 import com.example.chatsample.presentation.viewmodels.HomeViewModel
 import com.example.chatsample.presentation.viewmodels.LoginViewModel
@@ -71,15 +73,22 @@ fun AppNavHost(
         }
 
         composable(
-            "${NavigationItem.Chat.route}?chatId={chatId}?companionId={companionId}",
-            arguments = listOf(
-                navArgument("chatId") { defaultValue = "" },
-                navArgument("companionId") { defaultValue = "" })
+            "${NavigationItem.Chat.route}/{chatId}/{companionId}",
+            arguments = listOf(navArgument("chatId") { type = NavType.StringType; nullable = true  },
+                navArgument("companionId") { type = NavType.StringType; nullable = true  })
         ) { backStackEntry ->
-            ChatScreen(
-                backStackEntry.arguments?.getString("chatId")?:"",
-                backStackEntry.arguments?.getString("companionId")?:"",
-            )
+            val localViewModelStoreOwner = LocalViewModelStoreOwner.current
+            if (localViewModelStoreOwner != null) {
+                val chatViewModel: ChatViewModel = viewModel(
+                    viewModelStoreOwner = localViewModelStoreOwner,
+                    factory = viewModelFactory
+                )
+               ChatScreen(
+                    chatId = backStackEntry.arguments?.getString("chatId") ?: "",
+                    companionId = backStackEntry.arguments?.getString("companionId") ?: "",
+                    viewModel = chatViewModel
+                )
+            }
         }
     }
 }

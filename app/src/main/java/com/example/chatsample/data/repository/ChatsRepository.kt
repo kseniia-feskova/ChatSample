@@ -39,4 +39,8 @@ class ChatsRepository : IChatsRepository {
             documents.mapNotNull { it.toObject(MessageData::class.java) }[0]
     }
 
+    override suspend fun getCompanionForChat(chatId: String, currentId: String): String {
+        val chat = getChatDocument(chatId).get().await().toObject(ChatData::class.java)
+        return chat?.companions?.firstOrNull { it != currentId } ?: ""
+    }
 }

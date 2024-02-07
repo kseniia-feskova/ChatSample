@@ -7,7 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.chatsample.app.MyApplication
 import com.example.chatsample.presentation.di.ViewModelFactory
 import com.example.chatsample.presentation.navigation.AppNavHost
-import com.example.chatsample.presentation.ui.theme.ChatSampleTheme
+import com.example.chatsample.presentation.view.ui.theme.ChatSampleTheme
 import javax.inject.Inject
 
 class MainActivity : ComponentActivity() {

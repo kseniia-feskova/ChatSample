@@ -35,7 +35,7 @@ import com.example.chatsample.domain.model.ChatUI
 import com.example.chatsample.domain.model.UserUI
 import com.example.chatsample.presentation.model.LoadListState
 import com.example.chatsample.presentation.navigation.Screen
-import com.example.chatsample.presentation.ui.theme.ChatSampleTheme
+import com.example.chatsample.presentation.view.ui.theme.ChatSampleTheme
 import com.example.chatsample.presentation.view.ChatPreviewItem
 import com.example.chatsample.presentation.view.utils.BottomDrawerContent
 import com.example.chatsample.presentation.view.utils.FloatingButtonContent
@@ -168,7 +168,7 @@ fun ContactsDrawer(
                     modifier = Modifier
                         .padding(8.dp)
                         .clickable {
-                            navController?.navigate(Screen.CHAT.name)
+                            navController?.navigate("${Screen.CHAT.name}/${null}/${it.id}")
                         },
                     color = Color(10, 10, 100),
                     style = MaterialTheme.typography.labelMedium,

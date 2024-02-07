@@ -10,4 +10,5 @@ interface IChatsRepository {
     suspend fun addNewMessage(chatId: String, message: MessageData)
     suspend fun getLastMessage(chatId: String): MessageData?
     suspend fun createChat(chat: ChatData)
+    suspend fun getCompanionForChat(chatId: String, currentId: String): String
 }

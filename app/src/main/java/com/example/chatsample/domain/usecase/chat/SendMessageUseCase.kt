@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class SendMessageUseCase @Inject constructor(
     private val usersRepository: IUserRepository,
-    private val messagesRepository: IMessagesRepository
+    private val messagesRepository: IMessagesRepository,
 ) : ISendMessageUseCase {
     override suspend fun invoke(text: String, chatId: String) {
         val newMessage = createMessage(text)
@@ -22,7 +22,7 @@ class SendMessageUseCase @Inject constructor(
             id = UUID.randomUUID().toString(),
             authorId = usersRepository.getLoggedId(),
             text = encrypt(text),
-            timestamp = Timestamp(System.currentTimeMillis(), 0)
+            timestamp = Timestamp(System.currentTimeMillis()/1000L, 0)
         )
     }
 }

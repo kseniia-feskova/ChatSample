@@ -4,6 +4,7 @@ import com.example.chatsample.domain.model.MessageData
 import com.example.chatsample.domain.model.MessageUI
 import com.example.chatsample.domain.repository.IMessagesRepository
 import com.example.chatsample.domain.repository.IUserRepository
+import com.example.chatsample.domain.utils.decrypt
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -27,8 +28,8 @@ class GetListOfMessagesUseCase @Inject constructor(
         return MessageUI(
             id = messageData.id,
             authorId = messageData.authorId,
-            authorName = author?.name ?: "",
-            text = messageData.text,
+            authorName = decrypt(author?.name ?: ""),
+            text = decrypt(messageData.text),
             isMyMessage = messageData.authorId == currentId,
             timestamp = messageData.timestamp
         )

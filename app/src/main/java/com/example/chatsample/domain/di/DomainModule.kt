@@ -5,12 +5,20 @@ import com.example.chatsample.domain.repository.IMessagesRepository
 import com.example.chatsample.domain.repository.IUserRepository
 import com.example.chatsample.domain.usecase.IIsUserLoggedInUseCase
 import com.example.chatsample.domain.usecase.IsUserLoggedInUseCase
+import com.example.chatsample.domain.usecase.chat.CreateChatUseCase
 import com.example.chatsample.domain.usecase.chat.GetAllChatsUseCase
+import com.example.chatsample.domain.usecase.chat.GetCompanionForChatUseCase
 import com.example.chatsample.domain.usecase.chat.GetCompanionsUseCase
 import com.example.chatsample.domain.usecase.chat.GetListOfMessagesUseCase
+import com.example.chatsample.domain.usecase.chat.ICreateChatUseCase
 import com.example.chatsample.domain.usecase.chat.IGetAllChatsUseCase
+import com.example.chatsample.domain.usecase.chat.IGetCompanionForChatUseCase
 import com.example.chatsample.domain.usecase.chat.IGetCompanionsUseCase
 import com.example.chatsample.domain.usecase.chat.IGetListOfMessagesUseCase
+import com.example.chatsample.domain.usecase.chat.ISendMessageUseCase
+import com.example.chatsample.domain.usecase.chat.IUpdateUnreadChatUseCase
+import com.example.chatsample.domain.usecase.chat.SendMessageUseCase
+import com.example.chatsample.domain.usecase.chat.UpdateUnreadChatUseCase
 import com.example.chatsample.domain.usecase.login.CheckUsernameUseCase
 import com.example.chatsample.domain.usecase.login.CreateUserUseCase
 import com.example.chatsample.domain.usecase.login.ICheckUsernameUseCase
@@ -64,5 +72,34 @@ class DomainModule {
         userRepository: IUserRepository,
     ): IGetCompanionsUseCase {
         return GetCompanionsUseCase(userRepository)
+    }
+
+    @Provides
+    fun provideCreateChatUseCase(
+        userRepository: IUserRepository,
+        chatsRepository: IChatsRepository
+    ): ICreateChatUseCase {
+        return CreateChatUseCase(userRepository, chatsRepository)
+    }
+
+    @Provides
+    fun provideSendMessageUseCase(
+        userRepository: IUserRepository,
+        messagesRepository: IMessagesRepository
+    ): ISendMessageUseCase {
+        return SendMessageUseCase(userRepository, messagesRepository)
+    }
+
+    @Provides
+    fun provideUpdateUnreadChatUseCase(userRepository: IUserRepository): IUpdateUnreadChatUseCase {
+        return UpdateUnreadChatUseCase(userRepository)
+    }
+
+    @Provides
+    fun provideGetCompanionForChatUseCase(
+        userRepository: IUserRepository,
+        chatsRepository: IChatsRepository
+    ): IGetCompanionForChatUseCase {
+        return GetCompanionForChatUseCase(userRepository, chatsRepository)
     }
 }

@@ -1,5 +1,6 @@
 package com.example.chatsample.presentation.view.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -37,35 +38,32 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.chatsample.domain.model.MessageUI
-import com.example.chatsample.presentation.ui.theme.Blue50
-import com.example.chatsample.presentation.ui.theme.ChatSampleTheme
-import com.example.chatsample.presentation.ui.theme.WhiteBlue
+import com.example.chatsample.presentation.model.LoadListState
+import com.example.chatsample.presentation.view.ui.theme.Blue50
+import com.example.chatsample.presentation.view.ui.theme.ChatSampleTheme
+import com.example.chatsample.presentation.view.ui.theme.WhiteBlue
+import com.example.chatsample.presentation.viewmodels.ChatViewModel
 import com.google.firebase.Timestamp
 
 @Composable
-fun ChatScreen(chatId: String, userId: String) {
-
-    if (chatId.isNotEmpty()) {
-        //setInViewModel
+fun ChatScreen(chatId: String, companionId: String, viewModel: ChatViewModel) {
+    if (companionId.isNotEmpty()) {
+        viewModel.setCompanionId(companionId)
     }
+    if (chatId.isNotEmpty()) {
+        Log.e("ChatScreen", "chatId = $chatId")
+        viewModel.setChatId(chatId)
+    }
+    ChatScreenContent(loadMessages = viewModel.messagesList) {
+        viewModel.sendNewMessage(it)
+    }
+}
 
-    val items = testMessages.sortedBy { it.timestamp }
+@Composable
+fun ChatScreenContent(loadMessages: LoadListState<MessageUI>, sendMessage: (String) -> Unit) {
     var messageText by remember { mutableStateOf("") }
-
     Box(modifier = Modifier.fillMaxSize()) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-                .padding(0.dp, 0.dp, 0.dp, 56.dp),
-            reverseLayout = true,
-            contentPadding = PaddingValues(vertical = 8.dp)
-        ) {
-            items(items = items) {
-                if (it.isMyMessage) MyMessageItem(message = it)
-                else CompanionMessageItem(message = it)
-            }
-        }
+        HandleListOfMessages(loadMessages)
         OutlinedTextField(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -85,7 +83,10 @@ fun ChatScreen(chatId: String, userId: String) {
             trailingIcon = {
                 IconButton(
                     modifier = Modifier.padding(0.dp),
-                    onClick = { /*sendmessage */ }) {
+                    onClick = {
+                        sendMessage(messageText)
+
+                    }) {
                     Icon(
                         imageVector = Icons.Filled.PlayArrow,
                         modifier = Modifier
@@ -100,13 +101,27 @@ fun ChatScreen(chatId: String, userId: String) {
     }
 }
 
-private fun sendMessage(text: String, chatId: String) {
-    if (chatId.isNotEmpty()) {
-        //sendMessage(text)
-    } else {
-        //createChatAndSendMessage(text, userId)
+@Composable
+fun HandleListOfMessages(loadMessages: LoadListState<MessageUI>) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        if (loadMessages is LoadListState.Success) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .padding(0.dp, 0.dp, 0.dp, 56.dp),
+                reverseLayout = false,
+                contentPadding = PaddingValues(vertical = 8.dp)
+            ) {
+                items(items = loadMessages.list.sortedBy { it.timestamp }) {
+                    if (it.isMyMessage) MyMessageItem(message = it)
+                    else CompanionMessageItem(message = it)
+                }
+            }
+        }
     }
 }
+
 
 @Composable
 private fun newMessageColors() = OutlinedTextFieldDefaults.colors(
@@ -215,7 +230,7 @@ val Int.percentWidth: Dp
 @Composable
 fun ChatScreenPreview() {
     ChatSampleTheme {
-        ChatScreen("", "")
+        ChatScreenContent(LoadListState.Success(emptyList())) {}
     }
 }
 
@@ -252,71 +267,3 @@ fun MyMessageItemPreview() {
         )
     }
 }
-
-
-private val testMessages = listOf(
-    MessageUI(
-        id = "01",
-        authorId = "091",
-        authorName = "Olga",
-        isMyMessage = true,
-        timestamp = Timestamp(2, 0),
-        text = "Hello, my dear friend I am so glad to hear you are doing great at work "
-    ),
-    MessageUI(
-        id = "0",
-        authorId = "09",
-        authorName = "Kevin",
-        isMyMessage = false,
-        timestamp = Timestamp(1, 0),
-        text = "Hello, my  you are doing great at work "
-    ),
-    MessageUI(
-        id = "01",
-        authorId = "091",
-        authorName = "Olga",
-        isMyMessage = true,
-        timestamp = Timestamp(6, 0),
-        text = "Hello, my dear friend I am so glad work "
-    ),
-    MessageUI(
-        id = "0",
-        authorId = "09",
-        authorName = "Kevin",
-        isMyMessage = false,
-        timestamp = Timestamp(4, 0),
-        text = "Hello, my jsncks ;slld "
-    ),
-    MessageUI(
-        id = "01",
-        authorId = "091",
-        authorName = "Olga",
-        isMyMessage = true,
-        timestamp = Timestamp(3, 0),
-        text = "Hello, my dear friend I am so glad to hear you are doing great atear you are doing grear you are doing great atear you are doing great at eat atear you are doing great atear you are doing great atear you are doing great atear you are doing great atear you are doing great atear you are doing great at work "
-    ),
-    MessageUI(
-        id = "0",
-        authorId = "09",
-        authorName = "Kevin",
-        isMyMessage = false,
-        timestamp = Timestamp(5, 0),
-        text = "Hello, my dear friend I am so glad to hear you are doing great at work ear you are doing great atear you are doing great atear you are doing great atear you are doing great at "
-    ),
-    MessageUI(
-        id = "01",
-        authorId = "091",
-        authorName = "Olga",
-        isMyMessage = true,
-        timestamp = Timestamp(6, 0),
-        text = "Hello, my dear friendfriendfriendfri endfriendfriendfriendfriendfriendfriend I am so glad work "
-    ),
-    MessageUI(
-        id = "0",
-        authorId = "09",
-        authorName = "Olga",
-        isMyMessage = true,
-        timestamp = Timestamp(4, 0),
-        text = "Hello, my jsncks ;slld "
-    ),
-)
