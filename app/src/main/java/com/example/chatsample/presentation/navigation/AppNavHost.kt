@@ -74,8 +74,8 @@ fun AppNavHost(
 
         composable(
             "${NavigationItem.Chat.route}/{chatId}/{companionId}",
-            arguments = listOf(navArgument("chatId") { type = NavType.StringType; nullable = true  },
-                navArgument("companionId") { type = NavType.StringType; nullable = true  })
+            arguments = listOf(navArgument("chatId") { type = NavType.StringType; nullable = true },
+                navArgument("companionId") { type = NavType.StringType; nullable = true })
         ) { backStackEntry ->
             val localViewModelStoreOwner = LocalViewModelStoreOwner.current
             if (localViewModelStoreOwner != null) {
@@ -83,10 +83,11 @@ fun AppNavHost(
                     viewModelStoreOwner = localViewModelStoreOwner,
                     factory = viewModelFactory
                 )
-               ChatScreen(
+                ChatScreen(
                     chatId = backStackEntry.arguments?.getString("chatId") ?: "",
                     companionId = backStackEntry.arguments?.getString("companionId") ?: "",
-                    viewModel = chatViewModel
+                    viewModel = chatViewModel,
+                    navController = navController
                 )
             }
         }

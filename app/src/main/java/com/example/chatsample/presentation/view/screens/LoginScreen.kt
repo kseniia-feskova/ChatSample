@@ -81,7 +81,7 @@ fun LoginScreenContent(navController: NavController, viewModel: LoginViewModel) 
                 modifier = Modifier
                     .padding(vertical = 8.dp)
                     .align(Alignment.CenterHorizontally),
-                onClick = { onThirdButtonClick(navController) }
+                onClick = { onBackClick(navController) }
             ) {
                 Text(
                     modifier = Modifier.padding(horizontal = 12.dp),
@@ -204,7 +204,7 @@ private fun onSecondButtonClick(
     sendData(username, password)
 }
 
-private fun onThirdButtonClick(navController: NavController?) {
+private fun onBackClick(navController: NavController?) {
     navController?.popBackStack()
 }
 

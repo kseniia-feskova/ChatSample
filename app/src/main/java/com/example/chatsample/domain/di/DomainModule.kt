@@ -23,7 +23,9 @@ import com.example.chatsample.domain.usecase.login.CheckUsernameUseCase
 import com.example.chatsample.domain.usecase.login.CreateUserUseCase
 import com.example.chatsample.domain.usecase.login.ICheckUsernameUseCase
 import com.example.chatsample.domain.usecase.login.ICreateUserUseCase
+import com.example.chatsample.domain.usecase.login.ILogOutUseCase
 import com.example.chatsample.domain.usecase.login.ILoginUseCase
+import com.example.chatsample.domain.usecase.login.LogOutUseCase
 import com.example.chatsample.domain.usecase.login.LoginUseCase
 import dagger.Module
 import dagger.Provides
@@ -101,5 +103,10 @@ class DomainModule {
         chatsRepository: IChatsRepository
     ): IGetCompanionForChatUseCase {
         return GetCompanionForChatUseCase(userRepository, chatsRepository)
+    }
+
+    @Provides
+    fun provideLogOutUseCase(userRepository: IUserRepository): ILogOutUseCase {
+        return LogOutUseCase(userRepository)
     }
 }
