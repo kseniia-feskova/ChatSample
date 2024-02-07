@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
@@ -16,6 +17,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -37,6 +40,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.chatsample.domain.model.MessageUI
 import com.example.chatsample.presentation.model.LoadListState
 import com.example.chatsample.presentation.view.ui.theme.Blue50
@@ -46,7 +50,12 @@ import com.example.chatsample.presentation.viewmodels.ChatViewModel
 import com.google.firebase.Timestamp
 
 @Composable
-fun ChatScreen(chatId: String, companionId: String, viewModel: ChatViewModel) {
+fun ChatScreen(
+    chatId: String,
+    companionId: String,
+    viewModel: ChatViewModel,
+    navController: NavController
+) {
     if (companionId.isNotEmpty()) {
         viewModel.setCompanionId(companionId)
     }
@@ -54,15 +63,59 @@ fun ChatScreen(chatId: String, companionId: String, viewModel: ChatViewModel) {
         Log.e("ChatScreen", "chatId = $chatId")
         viewModel.setChatId(chatId)
     }
-    ChatScreenContent(loadMessages = viewModel.messagesList) {
+    ChatScreenContent(loadMessages = viewModel.messagesList, navController = navController) {
         viewModel.sendNewMessage(it)
     }
 }
 
 @Composable
-fun ChatScreenContent(loadMessages: LoadListState<MessageUI>, sendMessage: (String) -> Unit) {
+fun BackButton(navController: NavController?, modifier: Modifier) {
+    Button(
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.Transparent
+        ),
+        modifier = modifier,
+        onClick = { onBackClick(navController) }
+    ) {
+        Text(
+            modifier = Modifier.padding(horizontal = 12.dp),
+            text = "Back", color = Color(10, 10, 100)
+        )
+    }
+}
+
+private fun onBackClick(navController: NavController?) {
+    navController?.popBackStack()
+}
+
+@Composable
+fun ChatScreenContent(
+    loadMessages: LoadListState<MessageUI>,
+    navController: NavController? = null,
+    sendMessage: (String) -> Unit
+) {
     var messageText by remember { mutableStateOf("") }
     Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .wrapContentHeight()
+                .fillMaxWidth(),
+        ) {
+            BackButton(
+                navController = navController,
+                modifier = Modifier.align(Alignment.CenterStart)
+            )
+            Text(
+                text = "Chat with user",
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .wrapContentHeight()
+                    .padding(vertical = 20.dp),
+                color = Color(10, 10, 100),
+                style = MaterialTheme.typography.headlineSmall
+            )
+        }
         HandleListOfMessages(loadMessages)
         OutlinedTextField(
             modifier = Modifier

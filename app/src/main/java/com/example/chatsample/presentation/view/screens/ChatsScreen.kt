@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -14,8 +15,17 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.FabPosition
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -26,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,9 +45,10 @@ import androidx.navigation.NavController
 import com.example.chatsample.domain.model.ChatUI
 import com.example.chatsample.domain.model.UserUI
 import com.example.chatsample.presentation.model.LoadListState
+import com.example.chatsample.presentation.navigation.NavigationItem
 import com.example.chatsample.presentation.navigation.Screen
-import com.example.chatsample.presentation.view.ui.theme.ChatSampleTheme
 import com.example.chatsample.presentation.view.ChatPreviewItem
+import com.example.chatsample.presentation.view.ui.theme.ChatSampleTheme
 import com.example.chatsample.presentation.view.utils.BottomDrawerContent
 import com.example.chatsample.presentation.view.utils.FloatingButtonContent
 import com.example.chatsample.presentation.viewmodels.ChatsViewModel
@@ -45,14 +57,19 @@ import com.example.chatsample.presentation.viewmodels.ChatsViewModel
 fun ChatsAndContactsScreen(viewModel: ChatsViewModel, navController: NavController? = null) {
     viewModel.callAllChats()
     viewModel.callCompanions()
-    ChatsAndContacts(navController, viewModel.listOfChats, viewModel.listOfCompanions)
+    ChatsAndContacts(
+        navController,
+        viewModel.listOfChats,
+        viewModel.listOfCompanions,
+    ) { viewModel.logOut() }
 }
 
 @Composable
 fun ChatsAndContacts(
     navController: NavController? = null,
     listOfChats: LoadListState<ChatUI>,
-    listOfCompanions: LoadListState<UserUI>
+    listOfCompanions: LoadListState<UserUI>,
+    onLogOut: () -> Unit
 ) {
     var isDrawerVisible by remember { mutableStateOf(DrawerValue.Closed) }
     fun changeDrawerVisibility() {
@@ -100,6 +117,24 @@ fun ChatsAndContacts(
                 navController = navController,
                 listOfCompanions = listOfCompanions
             ) { changeDrawerVisibility() }
+        }
+        if (isDrawerVisible == DrawerValue.Closed) {
+            IconButton(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .rotate(180f)
+                    .padding(8.dp),
+                onClick = {
+                    onLogOut()
+                    navController?.navigate(NavigationItem.Home.route)
+                }) {
+                Icon(
+                    modifier = Modifier.size(32.dp),
+                    tint = Color(10, 10, 100),
+                    imageVector = Icons.Filled.ExitToApp,
+                    contentDescription = "logOut"
+                )
+            }
         }
     }
 }
@@ -158,23 +193,61 @@ fun ContactsDrawer(
     onCLose: () -> Unit
 ) {
     if (listOfCompanions is LoadListState.Success) {
-        BottomDrawerContent(
-            modifier = modifier,
-            items = listOfCompanions.list,
-            onClose = { onCLose() },
-            itemView = {
+        if (listOfCompanions.list.isEmpty()) {
+            Card(
+                modifier = modifier
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(
+                    CornerSize(30.dp),
+                    CornerSize(30.dp),
+                    CornerSize(0.dp),
+                    CornerSize(0.dp)
+                ),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color(255, 255, 255, 255),
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            ) {
+                IconButton(
+                    modifier = Modifier.align(Alignment.End),
+                    onClick = { onCLose() },
+                    content = {
+                        Icon(
+                            imageVector = Icons.Filled.Close,
+                            contentDescription = null,
+                            tint = Color(10, 10, 100)
+                        )
+                    })
                 Text(
-                    text = "- ${it.name}",
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .clickable {
-                            navController?.navigate("${Screen.CHAT.name}/${null}/${it.id}")
-                        },
-                    color = Color(10, 10, 100),
-                    style = MaterialTheme.typography.labelMedium,
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(0.dp, 0.dp, 0.dp, 32.dp)
+                        .align(Alignment.CenterHorizontally),
+                    textAlign = TextAlign.Center,
+                    text = "There is no new users for you",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = Color(10, 10, 100)
                 )
             }
-        )
+        } else {
+            BottomDrawerContent(
+                modifier = modifier,
+                items = listOfCompanions.list,
+                onClose = { onCLose() },
+                itemView = {
+                    Text(
+                        text = "- ${it.name}",
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .clickable {
+                                navController?.navigate("${Screen.CHAT.name}/${null}/${it.id}")
+                            },
+                        color = Color(10, 10, 100),
+                        style = MaterialTheme.typography.labelMedium,
+                    )
+                }
+            )
+        }
     }
 }
 
@@ -224,6 +297,6 @@ fun ChatsScreenContentPreview() {
         ChatsAndContacts(
             listOfChats = LoadListState.Success(emptyList()),
             listOfCompanions = LoadListState.Success(emptyList())
-        )
+        ) {}
     }
 }
