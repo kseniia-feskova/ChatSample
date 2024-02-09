@@ -2,6 +2,7 @@ package com.example.chatsample.domain.di
 
 import com.example.chatsample.domain.repository.IChatsRepository
 import com.example.chatsample.domain.repository.IMessagesRepository
+import com.example.chatsample.domain.repository.INewsRepository
 import com.example.chatsample.domain.repository.IUserRepository
 import com.example.chatsample.domain.usecase.IIsUserLoggedInUseCase
 import com.example.chatsample.domain.usecase.IsUserLoggedInUseCase
@@ -27,6 +28,8 @@ import com.example.chatsample.domain.usecase.login.ILogOutUseCase
 import com.example.chatsample.domain.usecase.login.ILoginUseCase
 import com.example.chatsample.domain.usecase.login.LogOutUseCase
 import com.example.chatsample.domain.usecase.login.LoginUseCase
+import com.example.chatsample.domain.usecase.news.GetNewsUseCase
+import com.example.chatsample.domain.usecase.news.IGetNewsUseCase
 import dagger.Module
 import dagger.Provides
 
@@ -108,5 +111,11 @@ class DomainModule {
     @Provides
     fun provideLogOutUseCase(userRepository: IUserRepository): ILogOutUseCase {
         return LogOutUseCase(userRepository)
+    }
+
+
+    @Provides
+    fun provideGetNewsUseCase(newsRepository: INewsRepository): IGetNewsUseCase {
+        return GetNewsUseCase(newsRepository)
     }
 }

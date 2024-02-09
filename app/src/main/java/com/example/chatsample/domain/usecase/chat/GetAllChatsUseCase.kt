@@ -16,9 +16,7 @@ class GetAllChatsUseCase @Inject constructor(
     override suspend fun invoke(): List<ChatUI> {
         val currentId = userRepository.getLoggedId()
         val listOfChatData = chatsRepository.getAllChatsForUser(currentId)
-        Log.e("GetAllChatsUseCase", "currentId = $currentId, listOfChatData = $listOfChatData")
         return listOfChatData.map {
-            Log.e("GetAllChatsUseCase", "ChatData = $it")
             mapChatToUI(it, currentId)
         }
     }

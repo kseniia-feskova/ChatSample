@@ -4,6 +4,7 @@ import android.app.Application
 import com.example.chatsample.presentation.MainActivity
 import com.example.chatsample.data.di.DataModule
 import com.example.chatsample.data.di.KotprefModule
+import com.example.chatsample.data.di.NetworkModule
 import com.example.chatsample.domain.di.DomainModule
 import com.example.chatsample.presentation.viewmodels.SignupViewModel
 import dagger.BindsInstance
@@ -11,7 +12,7 @@ import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [DataModule::class, DomainModule::class, KotprefModule::class])
+@Component(modules = [DataModule::class, DomainModule::class, KotprefModule::class, NetworkModule::class])
 interface AppComponent {
 
     @Component.Builder

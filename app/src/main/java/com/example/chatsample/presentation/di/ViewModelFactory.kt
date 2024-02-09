@@ -14,6 +14,7 @@ import com.example.chatsample.domain.usecase.login.ICheckUsernameUseCase
 import com.example.chatsample.domain.usecase.login.ICreateUserUseCase
 import com.example.chatsample.domain.usecase.login.ILogOutUseCase
 import com.example.chatsample.domain.usecase.login.ILoginUseCase
+import com.example.chatsample.domain.usecase.news.IGetNewsUseCase
 import com.example.chatsample.presentation.viewmodels.ChatViewModel
 import com.example.chatsample.presentation.viewmodels.ChatsViewModel
 import com.example.chatsample.presentation.viewmodels.HomeViewModel
@@ -34,7 +35,8 @@ class ViewModelFactory @Inject constructor(
     private val sendMessageUseCase: ISendMessageUseCase,
     private val updateUnreadChatUseCase: IUpdateUnreadChatUseCase,
     private val getCompanionForChatUseCase: IGetCompanionForChatUseCase,
-    private val logOutUseCase: ILogOutUseCase
+    private val logOutUseCase: ILogOutUseCase,
+    private val getNewsUseCase: IGetNewsUseCase
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -48,7 +50,12 @@ class ViewModelFactory @Inject constructor(
             return HomeViewModel(isLoggedIn) as T
         }
         if (modelClass.isAssignableFrom(ChatsViewModel::class.java)) {
-            return ChatsViewModel(getAllChatsUseCase, getCompanionsUseCase, logOutUseCase) as T
+            return ChatsViewModel(
+                getAllChatsUseCase,
+                getCompanionsUseCase,
+                logOutUseCase,
+                getNewsUseCase
+            ) as T
         }
         if (modelClass.isAssignableFrom(ChatViewModel::class.java)) {
             return ChatViewModel(
