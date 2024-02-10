@@ -93,4 +93,9 @@ dependencies {
     //Shared Preferences
     implementation("com.chibatching.kotpref:kotpref:2.13.1")
 
+    //RxJava
+    implementation("io.reactivex.rxjava3:rxjava:3.0.0")
+    implementation("io.reactivex.rxjava3:rxandroid:3.0.0")
+    implementation("com.squareup.retrofit2:adapter-rxjava3:2.9.0")
+
 }
