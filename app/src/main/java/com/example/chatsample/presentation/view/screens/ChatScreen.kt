@@ -84,10 +84,6 @@ fun BackButton(navController: NavController?, modifier: Modifier) {
     }
 }
 
-private fun onBackClick(navController: NavController?) {
-    navController?.popBackStack()
-}
-
 @Composable
 fun ChatScreenContent(
     loadMessages: LoadListState<MessageUI>,

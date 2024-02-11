@@ -1,4 +1,4 @@
-package com.example.chatsample.presentation.view
+package com.example.chatsample.presentation.view.items
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

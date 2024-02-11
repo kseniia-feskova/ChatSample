@@ -70,7 +70,10 @@ fun SignUpScreenContent(navController: NavController, viewModel: SignupViewModel
                 color = WhiteBlue
             )
 
-            RegistrationForm(viewModel.userCreation, navController = navController) { name, password ->
+            RegistrationForm(
+                viewModel.userCreation,
+                navController = navController
+            ) { name, password ->
                 viewModel.checkAndCreateUser(name, password)
             }
 
@@ -99,7 +102,7 @@ fun RegistrationForm(
     sendData: (String, String) -> Unit,
 ) {
     val context = LocalContext.current
-    handleStatus(context, userUiState,navController)
+    handleStatus(context, userUiState, navController)
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -126,7 +129,11 @@ fun RegistrationForm(
             singleLine = true,
             visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            trailingIcon = { ShowPasswordIcon(passwordVisibility) { passwordVisibility = !passwordVisibility } },
+            trailingIcon = {
+                ShowPasswordIcon(passwordVisibility) {
+                    passwordVisibility = !passwordVisibility
+                }
+            },
             placeholder = { Text("Пароль") },
             shape = RoundedCornerShape(8.dp),
             colors = editTextColors()
@@ -140,7 +147,11 @@ fun RegistrationForm(
             singleLine = true,
             visualTransformation = if (confirmPasswordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            trailingIcon = { ShowPasswordIcon(confirmPasswordVisibility) { confirmPasswordVisibility = !confirmPasswordVisibility } },
+            trailingIcon = {
+                ShowPasswordIcon(confirmPasswordVisibility) {
+                    confirmPasswordVisibility = !confirmPasswordVisibility
+                }
+            },
             placeholder = { Text("Подтвердите пароль") },
             shape = RoundedCornerShape(8.dp),
             colors = editTextColors()
@@ -197,11 +208,23 @@ private fun ShowPasswordIcon(passwordVisibility: Boolean, onClick: (Boolean) -> 
     }
 }
 
-private fun handleStatus(context: Context, userUiState: UserUiState, navController: NavController?) {
+private fun handleStatus(
+    context: Context,
+    userUiState: UserUiState,
+    navController: NavController?
+) {
     when (userUiState) {
         is UserUiState.Loading -> Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()
-        is UserUiState.Success -> { navController?.navigate(Screen.CHATS.name) }
-        is UserUiState.Error -> Toast.makeText(context, "Error occur ${userUiState.message}", Toast.LENGTH_SHORT).show()
+        is UserUiState.Success -> {
+            navController?.navigate(Screen.MAIN.name)
+        }
+
+        is UserUiState.Error -> Toast.makeText(
+            context,
+            "Error occur ${userUiState.message}",
+            Toast.LENGTH_SHORT
+        ).show()
+
         is UserUiState.Empty -> Log.e("RegistrationForm", "state is empty")
     }
 }
@@ -220,7 +243,7 @@ private fun onSecondButtonClick(
     }
 }
 
-private fun onBackClick(navController: NavController?) {
+fun onBackClick(navController: NavController?) {
     navController?.popBackStack()
 }
 

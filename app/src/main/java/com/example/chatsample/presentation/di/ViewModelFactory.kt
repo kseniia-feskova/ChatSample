@@ -19,6 +19,8 @@ import com.example.chatsample.presentation.viewmodels.ChatViewModel
 import com.example.chatsample.presentation.viewmodels.ChatsViewModel
 import com.example.chatsample.presentation.viewmodels.HomeViewModel
 import com.example.chatsample.presentation.viewmodels.LoginViewModel
+import com.example.chatsample.presentation.viewmodels.MainViewModel
+import com.example.chatsample.presentation.viewmodels.NewsViewModel
 import com.example.chatsample.presentation.viewmodels.SignupViewModel
 import javax.inject.Inject
 
@@ -52,9 +54,7 @@ class ViewModelFactory @Inject constructor(
         if (modelClass.isAssignableFrom(ChatsViewModel::class.java)) {
             return ChatsViewModel(
                 getAllChatsUseCase,
-                getCompanionsUseCase,
-                logOutUseCase,
-                getNewsUseCase
+                getCompanionsUseCase
             ) as T
         }
         if (modelClass.isAssignableFrom(ChatViewModel::class.java)) {
@@ -65,6 +65,12 @@ class ViewModelFactory @Inject constructor(
                 updateUnreadChatUseCase,
                 getCompanionForChatUseCase
             ) as T
+        }
+        if (modelClass.isAssignableFrom(NewsViewModel::class.java)) {
+            return NewsViewModel(getNewsUseCase) as T
+        }
+        if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
+            return MainViewModel(logOutUseCase) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

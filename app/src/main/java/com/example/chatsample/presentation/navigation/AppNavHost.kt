@@ -13,11 +13,15 @@ import com.example.chatsample.presentation.view.screens.ChatScreen
 import com.example.chatsample.presentation.view.screens.ChatsAndContactsScreen
 import com.example.chatsample.presentation.view.screens.HomeScreenContent
 import com.example.chatsample.presentation.view.screens.LoginScreenContent
+import com.example.chatsample.presentation.view.screens.MainScreen
+import com.example.chatsample.presentation.view.screens.NewsScreen
 import com.example.chatsample.presentation.view.screens.SignUpScreenContent
 import com.example.chatsample.presentation.viewmodels.ChatViewModel
 import com.example.chatsample.presentation.viewmodels.ChatsViewModel
 import com.example.chatsample.presentation.viewmodels.HomeViewModel
 import com.example.chatsample.presentation.viewmodels.LoginViewModel
+import com.example.chatsample.presentation.viewmodels.MainViewModel
+import com.example.chatsample.presentation.viewmodels.NewsViewModel
 import com.example.chatsample.presentation.viewmodels.SignupViewModel
 
 @Composable
@@ -91,5 +95,26 @@ fun AppNavHost(
                 )
             }
         }
+        composable(NavigationItem.News.route) {
+            val localViewModelStoreOwner = LocalViewModelStoreOwner.current
+            if (localViewModelStoreOwner != null) {
+                val newsViewModel: NewsViewModel = viewModel(
+                    viewModelStoreOwner = localViewModelStoreOwner,
+                    factory = viewModelFactory
+                )
+                NewsScreen(newsViewModel, navController)
+            }
+        }
+        composable(NavigationItem.Main.route) {
+            val localViewModelStoreOwner = LocalViewModelStoreOwner.current
+            if (localViewModelStoreOwner != null) {
+                val mainViewModel: MainViewModel = viewModel(
+                    viewModelStoreOwner = localViewModelStoreOwner,
+                    factory = viewModelFactory
+                )
+                MainScreen(mainViewModel, navController)
+            }
+        }
+
     }
 }

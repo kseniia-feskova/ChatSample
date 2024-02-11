@@ -8,7 +8,7 @@ import retrofit2.http.Query
 interface ApiService {
     @GET("latest-news")
     fun getLatestNews(
-        @Query("language") language: String = "en",
+        @Query("language") language: String = "fr",
         @Query("apiKey") apiKey: String = API_KEY
     ): Single<NewsResponse>
 
