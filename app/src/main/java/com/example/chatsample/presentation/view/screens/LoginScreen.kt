@@ -38,6 +38,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.chatsample.presentation.model.UserUiState
 import com.example.chatsample.presentation.navigation.Screen
@@ -49,7 +51,11 @@ import com.example.chatsample.presentation.view.ui.theme.WhiteBlue
 import com.example.chatsample.presentation.viewmodels.LoginViewModel
 
 @Composable
-fun LoginScreenContent(navController: NavController, viewModel: LoginViewModel) {
+fun LoginScreenContent(
+    navController: NavController? = null,
+    getVmFactory: () -> ViewModelProvider.Factory,
+    viewModel: LoginViewModel = viewModel(factory = getVmFactory()),
+) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier

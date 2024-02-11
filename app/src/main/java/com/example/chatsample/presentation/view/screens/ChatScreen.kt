@@ -40,6 +40,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.chatsample.domain.model.MessageUI
 import com.example.chatsample.presentation.model.LoadListState
@@ -53,7 +55,8 @@ import com.google.firebase.Timestamp
 fun ChatScreen(
     chatId: String,
     companionId: String,
-    viewModel: ChatViewModel,
+    getVmFactory: () -> ViewModelProvider.Factory,
+    viewModel: ChatViewModel = viewModel(factory = getVmFactory()),
     navController: NavController
 ) {
     if (companionId.isNotEmpty()) {

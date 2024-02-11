@@ -41,6 +41,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.chatsample.domain.model.ChatUI
 import com.example.chatsample.domain.model.UserUI
@@ -54,7 +56,11 @@ import com.example.chatsample.presentation.view.utils.FloatingButtonContent
 import com.example.chatsample.presentation.viewmodels.ChatsViewModel
 
 @Composable
-fun ChatsAndContactsScreen(viewModel: ChatsViewModel, navController: NavController? = null) {
+fun ChatsAndContactsScreen(
+    navController: NavController? = null,
+    getVmFactory: () -> ViewModelProvider.Factory,
+    viewModel: ChatsViewModel = viewModel(factory = getVmFactory()),
+) {
     viewModel.callAllChats()
     viewModel.callCompanions()
     viewModel.callNews()
