@@ -1,11 +1,10 @@
 package com.example.chatsample.domain.usecase.chat
 
-import android.util.Log
-import com.example.chatsample.domain.utils.decrypt
 import com.example.chatsample.domain.model.ChatData
 import com.example.chatsample.domain.model.ChatUI
 import com.example.chatsample.domain.repository.IChatsRepository
 import com.example.chatsample.domain.repository.IUserRepository
+import com.example.chatsample.domain.utils.decrypt
 import com.google.firebase.Timestamp
 import javax.inject.Inject
 
@@ -16,9 +15,7 @@ class GetAllChatsUseCase @Inject constructor(
     override suspend fun invoke(): List<ChatUI> {
         val currentId = userRepository.getLoggedId()
         val listOfChatData = chatsRepository.getAllChatsForUser(currentId)
-        Log.e("GetAllChatsUseCase", "currentId = $currentId, listOfChatData = $listOfChatData")
         return listOfChatData.map {
-            Log.e("GetAllChatsUseCase", "ChatData = $it")
             mapChatToUI(it, currentId)
         }
     }

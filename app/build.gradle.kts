@@ -70,11 +70,15 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+    //Firebase
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
-    val nav_version = "2.7.6"
+
+    //Navigation
+    val nav_version = "2.7.7"
     implementation("androidx.navigation:navigation-compose:$nav_version")
 
 
+    //Dagger2
     val daggerVersion = "2.50"
     implementation("com.google.dagger:dagger:$daggerVersion")
     kapt("com.google.dagger:dagger-compiler:$daggerVersion")
@@ -82,6 +86,16 @@ dependencies {
     implementation("com.google.dagger:dagger-android-support:$daggerVersion")
     kapt("com.google.dagger:dagger-android-processor:$daggerVersion")
 
+    //Retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    //Shared Preferences
     implementation("com.chibatching.kotpref:kotpref:2.13.1")
+
+    //RxJava
+    implementation("io.reactivex.rxjava3:rxjava:3.0.0")
+    implementation("io.reactivex.rxjava3:rxandroid:3.0.0")
+    implementation("com.squareup.retrofit2:adapter-rxjava3:2.9.0")
 
 }
