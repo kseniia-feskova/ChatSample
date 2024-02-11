@@ -196,8 +196,16 @@ private fun handleStatus(
 ) {
     when (userUiState) {
         is UserUiState.Loading -> Log.e("RegistrationForm", "Loading")
-        is UserUiState.Success -> { navController?.navigate(Screen.CHATS.name) }
-        is UserUiState.Error -> Toast.makeText(context, "Error occur ${userUiState.message}", Toast.LENGTH_SHORT).show()
+        is UserUiState.Success -> {
+            navController?.navigate(Screen.MAIN.name)
+        }
+
+        is UserUiState.Error -> Toast.makeText(
+            context,
+            "Error occur ${userUiState.message}",
+            Toast.LENGTH_SHORT
+        ).show()
+
         is UserUiState.Empty -> Log.e("RegistrationForm", "state is empty")
     }
 }
@@ -208,10 +216,6 @@ private fun onSecondButtonClick(
     sendData: (String, String) -> Unit
 ) {
     sendData(username, password)
-}
-
-private fun onBackClick(navController: NavController?) {
-    navController?.popBackStack()
 }
 
 @Preview(showBackground = true)

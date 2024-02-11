@@ -53,5 +53,26 @@ fun AppNavHost(
                 navController = navController
             )
         }
+        composable(NavigationItem.News.route) {
+            val localViewModelStoreOwner = LocalViewModelStoreOwner.current
+            if (localViewModelStoreOwner != null) {
+                val newsViewModel: NewsViewModel = viewModel(
+                    viewModelStoreOwner = localViewModelStoreOwner,
+                    factory = viewModelFactory
+                )
+                NewsScreen(newsViewModel, navController)
+            }
+        }
+        composable(NavigationItem.Main.route) {
+            val localViewModelStoreOwner = LocalViewModelStoreOwner.current
+            if (localViewModelStoreOwner != null) {
+                val mainViewModel: MainViewModel = viewModel(
+                    viewModelStoreOwner = localViewModelStoreOwner,
+                    factory = viewModelFactory
+                )
+                MainScreen(mainViewModel, navController)
+            }
+        }
+
     }
 }

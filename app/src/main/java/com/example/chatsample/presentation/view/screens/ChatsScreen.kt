@@ -19,7 +19,6 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DrawerValue
@@ -36,7 +35,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -47,9 +45,8 @@ import androidx.navigation.NavController
 import com.example.chatsample.domain.model.ChatUI
 import com.example.chatsample.domain.model.UserUI
 import com.example.chatsample.presentation.model.LoadListState
-import com.example.chatsample.presentation.navigation.NavigationItem
 import com.example.chatsample.presentation.navigation.Screen
-import com.example.chatsample.presentation.view.ChatPreviewItem
+import com.example.chatsample.presentation.view.items.ChatPreviewItem
 import com.example.chatsample.presentation.view.ui.theme.ChatSampleTheme
 import com.example.chatsample.presentation.view.utils.BottomDrawerContent
 import com.example.chatsample.presentation.view.utils.FloatingButtonContent
@@ -68,15 +65,14 @@ fun ChatsAndContactsScreen(
         navController,
         viewModel.listOfChats,
         viewModel.listOfCompanions,
-    ) { viewModel.logOut() }
+    )
 }
 
 @Composable
 fun ChatsAndContacts(
     navController: NavController? = null,
     listOfChats: LoadListState<ChatUI>,
-    listOfCompanions: LoadListState<UserUI>,
-    onLogOut: () -> Unit
+    listOfCompanions: LoadListState<UserUI>
 ) {
     var isDrawerVisible by remember { mutableStateOf(DrawerValue.Closed) }
     fun changeDrawerVisibility() {
@@ -92,26 +88,42 @@ fun ChatsAndContacts(
             },
             floatingActionButtonPosition = handleFabPosition(listOfChats),
             content = { paddings ->
-                when (listOfChats) {
-                    is LoadListState.Success -> {
-                        if (listOfChats.list.isEmpty()) {
-                            EmptyListMessage()
-                        } else {
-                            ChatsScreenContent(
-                                listOfChats.list,
-                                paddings,
-                                isDrawerVisible,
-                                navController
-                            )
+                Column {
+
+                    BackButton(
+                        navController = navController,
+                        modifier = Modifier.align(Alignment.Start)
+                    )
+                    when (listOfChats) {
+                        is LoadListState.Success -> {
+                            if (listOfChats.list.isEmpty()) {
+                                EmptyListMessage()
+                            } else {
+                                ChatsScreenContent(
+                                    listOfChats.list,
+                                    paddings,
+                                    isDrawerVisible,
+                                    navController
+                                )
+                            }
+                        }
+
+                        is LoadListState.Loading -> {
+                            Log.e("RegistrationForm", "Loading")
+                        }
+
+                        is LoadListState.Error -> {
+                            ErrorMessage("There is internal error")
                         }
                     }
-
-                    is LoadListState.Loading -> {
-                        Log.e("RegistrationForm", "Loading")
-                    }
-
-                    is LoadListState.Error -> {
-                        ErrorMessage()
+                }
+                Box() {
+                    if (isDrawerVisible == DrawerValue.Open) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color(8, 25, 78, 65))
+                        )
                     }
                 }
             }
@@ -124,24 +136,6 @@ fun ChatsAndContacts(
                 navController = navController,
                 listOfCompanions = listOfCompanions
             ) { changeDrawerVisibility() }
-        }
-        if (isDrawerVisible == DrawerValue.Closed) {
-            IconButton(
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .rotate(180f)
-                    .padding(8.dp),
-                onClick = {
-                    onLogOut()
-                    navController?.navigate(NavigationItem.Home.route)
-                }) {
-                Icon(
-                    modifier = Modifier.size(32.dp),
-                    tint = Color(10, 10, 100),
-                    imageVector = Icons.Filled.ExitToApp,
-                    contentDescription = "logOut"
-                )
-            }
         }
     }
 }
@@ -168,14 +162,14 @@ fun EmptyListMessage() {
 }
 
 @Composable
-fun ErrorMessage() {
+fun ErrorMessage(text: String) {
     Box(modifier = Modifier.fillMaxSize()) {
         Text(
             modifier = Modifier
                 .align(Alignment.Center)
                 .wrapContentSize(),
             textAlign = TextAlign.Center,
-            text = "There is internal error",
+            text = text,
             style = MaterialTheme.typography.labelLarge,
             color = Color(10, 10, 100)
         )
@@ -278,13 +272,6 @@ fun ChatsScreenContent(
         ) {
             VerticalRecyclerView(listOfChats.sortedBy { it.isRead }, navController)
         }
-        if (isDrawerVisible == DrawerValue.Open) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color(8, 25, 78, 65))
-            )
-        }
     }
 }
 
@@ -304,6 +291,6 @@ fun ChatsScreenContentPreview() {
         ChatsAndContacts(
             listOfChats = LoadListState.Success(emptyList()),
             listOfCompanions = LoadListState.Success(emptyList())
-        ) {}
+        )
     }
 }

@@ -9,8 +9,6 @@ import com.example.chatsample.domain.model.ChatUI
 import com.example.chatsample.domain.model.UserUI
 import com.example.chatsample.domain.usecase.chat.IGetAllChatsUseCase
 import com.example.chatsample.domain.usecase.chat.IGetCompanionsUseCase
-import com.example.chatsample.domain.usecase.login.ILogOutUseCase
-import com.example.chatsample.domain.usecase.news.IGetNewsUseCase
 import com.example.chatsample.presentation.model.LoadListState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,8 +16,6 @@ import javax.inject.Inject
 class ChatsViewModel @Inject constructor(
     private val getAllChatsUseCase: IGetAllChatsUseCase,
     private val getCompanionsUseCase: IGetCompanionsUseCase,
-    private val logOutUseCase: ILogOutUseCase,
-    private val getNewsUseCase: IGetNewsUseCase
 ) : ViewModel() {
     var listOfChats: LoadListState<ChatUI> by mutableStateOf(LoadListState.Loading)
         private set
@@ -46,13 +42,5 @@ class ChatsViewModel @Inject constructor(
                 LoadListState.Error("Cannot callCompanions, ${e.message}")
             }
         }
-    }
-
-    fun logOut() {
-        logOutUseCase.invoke()
-    }
-
-    fun callNews(){
-        getNewsUseCase.invoke()
     }
 }

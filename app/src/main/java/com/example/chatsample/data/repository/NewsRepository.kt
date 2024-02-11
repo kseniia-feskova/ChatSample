@@ -1,22 +1,14 @@
 package com.example.chatsample.data.repository
 
 import com.example.chatsample.data.api.ApiService
+import com.example.chatsample.data.model.NewsResponse
 import com.example.chatsample.domain.repository.INewsRepository
-import io.reactivex.rxjava3.schedulers.Schedulers
+import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
 class NewsRepository @Inject constructor(private val newsApiService: ApiService) : INewsRepository {
-    override fun getCurrentNews() {
-        val result = newsApiService.getLatestNews().subscribeOn(Schedulers.io())
-            .observeOn(Schedulers.single())
-            .map {
-                it.news.sortedBy { it.author }
-            }
-            .subscribe({ news ->
-                println(news.size)
-            }, { error ->
-                println("Ошибка при выполнении запроса: ${error.message}")
-            })
+    override fun getCurrentNews(): Single<NewsResponse> {
+        return newsApiService.getLatestNews()
     }
 }
 /* Solution without rxJava
