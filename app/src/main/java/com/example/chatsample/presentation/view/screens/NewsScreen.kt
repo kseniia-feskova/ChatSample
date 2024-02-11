@@ -18,6 +18,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.chatsample.domain.model.NewsUI
 import com.example.chatsample.presentation.model.LoadListState
@@ -25,7 +27,11 @@ import com.example.chatsample.presentation.view.items.NewPreviewItem
 import com.example.chatsample.presentation.viewmodels.NewsViewModel
 
 @Composable
-fun NewsScreen(viewModel: NewsViewModel, navController: NavController? = null) {
+fun NewsScreen(
+    getVmFactory: () -> ViewModelProvider.Factory,
+    viewModel: NewsViewModel = viewModel(factory = getVmFactory()),
+    navController: NavController? = null
+) {
     viewModel.callNews()
     NewsScreenContent(
         viewModel.listOfNews,
@@ -45,7 +51,7 @@ fun NewsScreenContent(listOfChats: LoadListState<NewsUI>, navController: NavCont
                 if (listOfChats.list.isEmpty()) {
                     EmptyNewsMessage()
                 } else {
-                    NewsList(listOfChats.list, navController)
+                    NewsList(listOfChats.list)
                 }
             }
 
@@ -61,7 +67,7 @@ fun NewsScreenContent(listOfChats: LoadListState<NewsUI>, navController: NavCont
 }
 
 @Composable
-fun NewsList(list: List<NewsUI>, navController: NavController? = null) {
+fun NewsList(list: List<NewsUI>) {
     Log.e("NewsList", "List = ${list.size}")
     Box(
         contentAlignment = Alignment.Center,

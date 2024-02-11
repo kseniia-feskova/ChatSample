@@ -60,7 +60,6 @@ fun ChatsAndContactsScreen(
 ) {
     viewModel.callAllChats()
     viewModel.callCompanions()
-    viewModel.callNews()
     ChatsAndContacts(
         navController,
         viewModel.listOfChats,
@@ -102,7 +101,6 @@ fun ChatsAndContacts(
                                 ChatsScreenContent(
                                     listOfChats.list,
                                     paddings,
-                                    isDrawerVisible,
                                     navController
                                 )
                             }
@@ -256,7 +254,6 @@ fun ContactsDrawer(
 fun ChatsScreenContent(
     listOfChats: List<ChatUI>,
     paddings: PaddingValues,
-    isDrawerVisible: DrawerValue,
     navController: NavController? = null
 ) {
     Box(
