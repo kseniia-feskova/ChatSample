@@ -14,13 +14,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.chatsample.presentation.navigation.Screen
 import com.example.chatsample.presentation.view.ui.theme.ChatSampleTheme
 import com.example.chatsample.presentation.viewmodels.HomeViewModel
 
 @Composable
-fun HomeScreenContent(navController: NavController? = null, viewModel: HomeViewModel) {
+fun HomeScreenContent(
+    navController: NavController? = null,
+    getVmFactory: () -> ViewModelProvider.Factory,
+    viewModel: HomeViewModel = viewModel(factory = getVmFactory()),
+) {
     if (viewModel.isUserLoggedIn()) {
         navController?.navigate(Screen.MAIN.name)
     } else {

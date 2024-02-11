@@ -19,13 +19,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.chatsample.presentation.navigation.NavigationItem
 import com.example.chatsample.presentation.navigation.Screen
 import com.example.chatsample.presentation.viewmodels.MainViewModel
 
 @Composable
-fun MainScreen(viewModel: MainViewModel, navController: NavController? = null) {
+fun MainScreen(
+    getVmFactory: () -> ViewModelProvider.Factory,
+    viewModel: MainViewModel = viewModel(factory = getVmFactory()),
+    navController: NavController? = null
+) {
     MainScreenContent(onLogOut = { viewModel.onLogOut() }, navController)
 }
 
