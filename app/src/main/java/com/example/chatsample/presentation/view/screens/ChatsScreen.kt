@@ -54,6 +54,7 @@ import com.example.chatsample.presentation.viewmodels.ChatsViewModel
 fun ChatsAndContactsScreen(viewModel: ChatsViewModel, navController: NavController? = null) {
     viewModel.callAllChats()
     viewModel.callCompanions()
+    viewModel.callNews()
     ChatsAndContacts(
         navController,
         viewModel.listOfChats,
