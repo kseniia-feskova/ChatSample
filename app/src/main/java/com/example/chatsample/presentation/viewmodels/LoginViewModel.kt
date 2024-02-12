@@ -28,7 +28,7 @@ class LoginViewModel @Inject constructor(
                 else UserUiState.Error("Cannot login")
 
             } catch (e: IOException) {
-                UserUiState.Error("Cannot send to back")
+                UserUiState.Error("Cannot send to back-end")
             }
         }
     }
