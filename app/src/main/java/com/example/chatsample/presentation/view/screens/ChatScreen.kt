@@ -1,9 +1,12 @@
 package com.example.chatsample.presentation.view.screens
 
 import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -12,6 +15,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -28,15 +32,21 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -65,6 +75,7 @@ fun ChatScreen(
     if (chatId.isNotEmpty()) {
         Log.e("ChatScreen", "chatId = $chatId")
         viewModel.setChatId(chatId)
+        viewModel.updateChatAsRead()
     }
     ChatScreenContent(loadMessages = viewModel.messagesList, navController = navController) {
         viewModel.sendNewMessage(it)
@@ -87,69 +98,95 @@ fun BackButton(navController: NavController?, modifier: Modifier) {
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ChatScreenContent(
     loadMessages: LoadListState<MessageUI>,
     navController: NavController? = null,
     sendMessage: (String) -> Unit
 ) {
-    var messageText by remember { mutableStateOf("") }
+    var messageText by remember { mutableStateOf(TextFieldValue()) }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusRequester = remember { FocusRequester() }
     Box(modifier = Modifier.fillMaxSize()) {
-        Box(
+        Column(
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .wrapContentHeight()
                 .fillMaxWidth(),
         ) {
-            BackButton(
-                navController = navController,
-                modifier = Modifier.align(Alignment.CenterStart)
-            )
-            Text(
-                text = "Chat with user",
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .wrapContentHeight()
-                    .padding(vertical = 20.dp),
-                color = Color(10, 10, 100),
-                style = MaterialTheme.typography.headlineSmall
-            )
-        }
-        HandleListOfMessages(loadMessages)
-        OutlinedTextField(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth(),
-            value = messageText,
-            onValueChange = { messageText = it },
-            singleLine = false,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            placeholder = { Text("Новое сообщение", modifier = Modifier.padding(vertical = 4.dp)) },
-            shape = RoundedCornerShape(
-                CornerSize(16.dp),
-                CornerSize(16.dp),
-                CornerSize(0.dp),
-                CornerSize(0.dp)
-            ),
-            colors = newMessageColors(),
-            trailingIcon = {
-                IconButton(
-                    modifier = Modifier.padding(0.dp),
-                    onClick = {
-                        sendMessage(messageText)
+            Box() {
+                HandleListOfMessages(loadMessages)
+                OutlinedTextField(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester),
+                    value = messageText,
+                    onValueChange = { messageText = it },
+                    singleLine = false,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    placeholder = {
+                        Text(
+                            "New message",
+                            modifier = Modifier.padding(vertical = 4.dp)
+                        )
+                    },
+                    shape = RoundedCornerShape(
+                        CornerSize(16.dp),
+                        CornerSize(16.dp),
+                        CornerSize(0.dp),
+                        CornerSize(0.dp)
+                    ),
+                    colors = newMessageColors(),
+                    trailingIcon = {
+                        IconButton(
+                            modifier = Modifier.padding(0.dp),
+                            onClick = {
+                                if (messageText.text.trim().isNotEmpty()) {
+                                    sendMessage(messageText.text)
+                                    messageText = TextFieldValue()
+                                    focusRequester.freeFocus()
+                                    keyboardController?.hide()
+                                }
+                            }) {
+                            Icon(
+                                imageVector = Icons.Filled.PlayArrow,
+                                modifier = Modifier
+                                    .padding(0.dp)
+                                    .size(32.dp),
+                                tint = Color(10, 10, 100),
+                                contentDescription = ""
+                            )
+                        }
+                    }
+                )
+                Row(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .background(Color.White)
+                        .wrapContentHeight(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start,
 
-                    }) {
-                    Icon(
-                        imageVector = Icons.Filled.PlayArrow,
+                    ) {
+                    BackButton(
+                        navController = navController,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Text(
+                        text = "Chat with user",
                         modifier = Modifier
-                            .padding(0.dp)
-                            .size(32.dp),
-                        tint = Color(10, 10, 100),
-                        contentDescription = ""
+                            .wrapContentHeight()
+                            .padding(12.dp)
+
+                            .weight(2f),
+                        color = Color(10, 10, 100),
+                        style = MaterialTheme.typography.titleSmall
                     )
                 }
             }
-        )
+        }
     }
 }
 
@@ -157,17 +194,24 @@ fun ChatScreenContent(
 fun HandleListOfMessages(loadMessages: LoadListState<MessageUI>) {
     Box(modifier = Modifier.fillMaxSize()) {
         if (loadMessages is LoadListState.Success) {
+            val listState = rememberLazyListState()
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.BottomCenter)
-                    .padding(0.dp, 0.dp, 0.dp, 56.dp),
+                    .padding(vertical = 56.dp),
                 reverseLayout = false,
-                contentPadding = PaddingValues(vertical = 8.dp)
+                contentPadding = PaddingValues(vertical = 8.dp),
+                state = listState
             ) {
                 items(items = loadMessages.list.sortedBy { it.timestamp }) {
                     if (it.isMyMessage) MyMessageItem(message = it)
                     else CompanionMessageItem(message = it)
+                }
+            }
+            LaunchedEffect(Unit) {
+                if (loadMessages.list.isNotEmpty()) {
+                    listState.scrollToItem(loadMessages.list.size)
                 }
             }
         }

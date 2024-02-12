@@ -25,7 +25,7 @@ class ChatsViewModel @Inject constructor(
     fun callAllChats() {
         viewModelScope.launch {
             listOfChats = try {
-                val chats = getAllChatsUseCase.invoke()
+                val chats = getAllChatsUseCase.invoke().sortedByDescending { it.timestamp }.sortedBy { it.isRead }
                 LoadListState.Success(chats)
             } catch (e: Exception) {
                 LoadListState.Error("Cannot callAllChats, ${e.message}")

@@ -57,6 +57,12 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    fun updateChatAsRead() {
+        viewModelScope.launch {
+            updateUnreadChatUseCase(chatId = chatId, isRead = true)
+        }
+    }
+
     private suspend fun createChat(): String {
         val newChatId = createChatUseCase.invoke(companionId)
         setChatId(newChatId)
