@@ -1,8 +1,12 @@
 package com.example.chatsample.presentation.view.items
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -28,10 +33,14 @@ import com.example.chatsample.presentation.view.ui.theme.ChatSampleTheme
 
 
 @Composable
-fun NewPreviewItem(new: NewsUI, navController: NavController? = null) {
+fun NewPreviewItem(new: NewsUI) {
+    val context = LocalContext.current
     Card(
         modifier = Modifier
             .padding(horizontal = 8.dp, vertical = 8.dp)
+            .clickable {
+                openUrl(context, new.url)
+            }
             .fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = Color(-2, -2, -1),
@@ -81,6 +90,11 @@ fun NewPreviewItem(new: NewsUI, navController: NavController? = null) {
             )
         }
     }
+}
+
+fun openUrl(context: Context, source: String) {
+    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(source))
+    context.startActivity(intent)
 }
 
 @Preview(showBackground = true)

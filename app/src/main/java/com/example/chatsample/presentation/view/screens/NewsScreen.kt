@@ -85,10 +85,10 @@ fun NewsList(list: List<NewsUI>) {
 }
 
 @Composable
-fun VerticalRecyclerViewNews(items: List<NewsUI>, navController: NavController? = null) {
+fun VerticalRecyclerViewNews(items: List<NewsUI>) {
     LazyColumn(contentPadding = PaddingValues(vertical = 8.dp)) {
         items(items = items) {
-            NewPreviewItem(new = it, navController = navController)
+            NewPreviewItem(new = it)
         }
     }
 }
