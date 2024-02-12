@@ -267,7 +267,7 @@ fun ChatsScreenContent(
                 .align(Alignment.TopCenter)
                 .padding(12.dp),
         ) {
-            VerticalRecyclerView(listOfChats.sortedBy { it.isRead }, navController)
+            VerticalRecyclerView(listOfChats, navController)
         }
     }
 }

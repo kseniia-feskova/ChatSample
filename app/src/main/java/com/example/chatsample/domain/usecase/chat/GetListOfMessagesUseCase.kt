@@ -18,7 +18,7 @@ class GetListOfMessagesUseCase @Inject constructor(
         return messagesRepository.listenNewMessages(chatId).map {
             it.map { message ->
                 mapMessageToUI(message)
-            }
+            }.sortedBy { it.timestamp }
         }
     }
 
