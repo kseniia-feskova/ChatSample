@@ -36,7 +36,7 @@ fun ChatPreviewItem(chat: ChatUI, navController: NavController? = null) {
             .padding(horizontal = 8.dp, vertical = 8.dp)
             .fillMaxWidth()
             .clickable {
-                navController?.navigate("${NavigationItem.Chat.route}/${chat.id}/${null}")
+                navController?.navigate("${NavigationItem.Chat.route}/${chat.id}/${null}/${chat.author}")
             },
         colors = CardDefaults.cardColors(
             containerColor = Color(-2, -2, -1),

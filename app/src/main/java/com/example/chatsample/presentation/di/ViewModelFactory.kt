@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.chatsample.domain.usecase.IIsUserLoggedInUseCase
 import com.example.chatsample.domain.usecase.chat.ICreateChatUseCase
+import com.example.chatsample.domain.usecase.chat.IDeleteChatUseCase
+import com.example.chatsample.domain.usecase.chat.IDeleteMessageUseCase
 import com.example.chatsample.domain.usecase.chat.IGetAllChatsUseCase
 import com.example.chatsample.domain.usecase.chat.IGetCompanionForChatUseCase
 import com.example.chatsample.domain.usecase.chat.IGetCompanionsUseCase
@@ -38,7 +40,9 @@ class ViewModelFactory @Inject constructor(
     private val updateUnreadChatUseCase: IUpdateUnreadChatUseCase,
     private val getCompanionForChatUseCase: IGetCompanionForChatUseCase,
     private val logOutUseCase: ILogOutUseCase,
-    private val getNewsUseCase: IGetNewsUseCase
+    private val getNewsUseCase: IGetNewsUseCase,
+    private val deleteChatUseCase: IDeleteChatUseCase,
+    private val deleteMessageUseCase: IDeleteMessageUseCase
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -63,7 +67,9 @@ class ViewModelFactory @Inject constructor(
                 createChatUseCase,
                 sendMessageUseCase,
                 updateUnreadChatUseCase,
-                getCompanionForChatUseCase
+                getCompanionForChatUseCase,
+                deleteChatUseCase,
+                deleteMessageUseCase
             ) as T
         }
         if (modelClass.isAssignableFrom(NewsViewModel::class.java)) {

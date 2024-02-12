@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatsample.domain.model.MessageUI
 import com.example.chatsample.domain.usecase.chat.ICreateChatUseCase
+import com.example.chatsample.domain.usecase.chat.IDeleteChatUseCase
+import com.example.chatsample.domain.usecase.chat.IDeleteMessageUseCase
 import com.example.chatsample.domain.usecase.chat.IGetCompanionForChatUseCase
 import com.example.chatsample.domain.usecase.chat.IGetListOfMessagesUseCase
 import com.example.chatsample.domain.usecase.chat.ISendMessageUseCase
@@ -21,7 +23,9 @@ class ChatViewModel @Inject constructor(
     private val createChatUseCase: ICreateChatUseCase,
     private val sendMessageUseCase: ISendMessageUseCase,
     private val updateUnreadChatUseCase: IUpdateUnreadChatUseCase,
-    private val getCompanionForChatUseCase: IGetCompanionForChatUseCase
+    private val getCompanionForChatUseCase: IGetCompanionForChatUseCase,
+    private val deleteChatUseCase: IDeleteChatUseCase,
+    private val deleteMessageUseCase: IDeleteMessageUseCase
 ) : ViewModel() {
 
     var messagesList: LoadListState<MessageUI> by mutableStateOf(LoadListState.Loading)
@@ -60,6 +64,22 @@ class ChatViewModel @Inject constructor(
     fun updateChatAsRead() {
         viewModelScope.launch {
             updateUnreadChatUseCase(chatId = chatId, isRead = true)
+        }
+    }
+
+    fun deleteChat() {
+        if (chatId.isNotEmpty()) {
+            viewModelScope.launch {
+                deleteChatUseCase.invoke(chatId)
+            }
+        }
+    }
+
+    fun deleteMessage(messageUI: MessageUI) {
+        if (chatId.isNotEmpty()) {
+            viewModelScope.launch {
+                deleteMessageUseCase(messageUI, chatId)
+            }
         }
     }
 

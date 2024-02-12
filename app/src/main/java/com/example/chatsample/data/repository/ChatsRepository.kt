@@ -43,4 +43,26 @@ class ChatsRepository : IChatsRepository {
         val chat = getChatDocument(chatId).get().await().toObject(ChatData::class.java)
         return chat?.companions?.firstOrNull { it != currentId } ?: ""
     }
+
+    override suspend fun getAllCompanionsForChat(chatId: String): List<String> {
+        val chat = getChatDocument(chatId).get().await().toObject(ChatData::class.java)
+        return chat?.companions ?: emptyList()
+    }
+
+    override suspend fun deleteChat(chatId: String) {
+        val messages = collection.document(chatId).collection("messages").get().await()
+        messages.forEach {
+            collection.document(chatId).collection("messages").document(it.id).delete()
+        }
+        collection.document(chatId).delete()
+    }
+
+    override suspend fun deleteMessage(messageId: String, chatId: String) {
+        val lastMessage = getLastMessage(chatId)
+        collection.document(chatId).collection("messages").document(messageId).delete()
+        if (lastMessage?.id == messageId) {
+            val newLastMessage = getLastMessage(chatId)
+            getChatDocument(chatId).update("timestamp", newLastMessage?.timestamp)
+        }
+    }
 }

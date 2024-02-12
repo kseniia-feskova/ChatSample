@@ -2,6 +2,8 @@ package com.example.chatsample.presentation.view.screens
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,11 +22,12 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -43,10 +46,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -58,6 +63,7 @@ import com.example.chatsample.presentation.model.LoadListState
 import com.example.chatsample.presentation.view.ui.theme.Blue50
 import com.example.chatsample.presentation.view.ui.theme.ChatSampleTheme
 import com.example.chatsample.presentation.view.ui.theme.WhiteBlue
+import com.example.chatsample.presentation.view.utils.BackButton
 import com.example.chatsample.presentation.viewmodels.ChatViewModel
 import com.google.firebase.Timestamp
 
@@ -65,6 +71,7 @@ import com.google.firebase.Timestamp
 fun ChatScreen(
     chatId: String,
     companionId: String,
+    companionName: String,
     getVmFactory: () -> ViewModelProvider.Factory,
     viewModel: ChatViewModel = viewModel(factory = getVmFactory()),
     navController: NavController
@@ -77,121 +84,109 @@ fun ChatScreen(
         viewModel.setChatId(chatId)
         viewModel.updateChatAsRead()
     }
-    ChatScreenContent(loadMessages = viewModel.messagesList, navController = navController) {
-        viewModel.sendNewMessage(it)
-    }
+    ChatScreenContent(
+        loadMessages = viewModel.messagesList,
+        companionName = companionName,
+        navController = navController,
+        sendMessage = {
+            viewModel.sendNewMessage(it)
+        },
+        deleteChat = {
+            viewModel.deleteChat()
+        },
+        deleteMessage = { message ->
+            viewModel.deleteMessage(message)
+        }
+    )
 }
 
 @Composable
-fun BackButton(navController: NavController?, modifier: Modifier) {
-    Button(
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color.Transparent
-        ),
-        modifier = modifier,
-        onClick = { onBackClick(navController) }
-    ) {
-        Text(
-            modifier = Modifier.padding(horizontal = 12.dp),
-            text = "Back", color = Color(10, 10, 100)
+fun ChatScreenContent(
+    loadMessages: LoadListState<MessageUI>,
+    companionName: String,
+    navController: NavController? = null,
+    sendMessage: (String) -> Unit,
+    deleteChat: () -> Unit,
+    deleteMessage: (MessageUI) -> Unit
+) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        ChatTopBar(
+            modifier = Modifier.align(Alignment.TopStart),
+            companionName,
+            navController,
+            deleteChat
+        )
+        HandleListOfMessages(loadMessages, deleteMessage)
+        SendMessageContainer(
+            modifier = Modifier.align(Alignment.BottomCenter),
+            sendMessage
         )
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun ChatScreenContent(
-    loadMessages: LoadListState<MessageUI>,
+fun ChatTopBar(
+    modifier: Modifier,
+    companionName: String,
     navController: NavController? = null,
-    sendMessage: (String) -> Unit
+    deleteChat: () -> Unit
 ) {
-    var messageText by remember { mutableStateOf(TextFieldValue()) }
-    val keyboardController = LocalSoftwareKeyboardController.current
-    val focusRequester = remember { FocusRequester() }
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column(
+    var expandedMenu by remember { mutableStateOf(false) }
+    Row(
+        modifier = modifier
+            .background(Color.White)
+            .wrapContentHeight(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start
+    ) {
+        BackButton(
+            navController,
             modifier = Modifier
-                .align(Alignment.TopCenter)
+                .weight(1f)
+                .padding(0.dp, 0.dp, 24.dp, 0.dp)
+        )
+        Text(
+            text = companionName,
+            modifier = Modifier
                 .wrapContentHeight()
-                .fillMaxWidth(),
-        ) {
-            Box() {
-                HandleListOfMessages(loadMessages)
-                OutlinedTextField(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .fillMaxWidth()
-                        .focusRequester(focusRequester),
-                    value = messageText,
-                    onValueChange = { messageText = it },
-                    singleLine = false,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    placeholder = {
-                        Text(
-                            "New message",
-                            modifier = Modifier.padding(vertical = 4.dp)
-                        )
-                    },
-                    shape = RoundedCornerShape(
-                        CornerSize(16.dp),
-                        CornerSize(16.dp),
-                        CornerSize(0.dp),
-                        CornerSize(0.dp)
-                    ),
-                    colors = newMessageColors(),
-                    trailingIcon = {
-                        IconButton(
-                            modifier = Modifier.padding(0.dp),
-                            onClick = {
-                                if (messageText.text.trim().isNotEmpty()) {
-                                    sendMessage(messageText.text)
-                                    messageText = TextFieldValue()
-                                    focusRequester.freeFocus()
-                                    keyboardController?.hide()
-                                }
-                            }) {
-                            Icon(
-                                imageVector = Icons.Filled.PlayArrow,
-                                modifier = Modifier
-                                    .padding(0.dp)
-                                    .size(32.dp),
-                                tint = Color(10, 10, 100),
-                                contentDescription = ""
-                            )
-                        }
-                    }
-                )
-                Row(
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .background(Color.White)
-                        .wrapContentHeight(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start,
+                .padding(12.dp)
+                .weight(2f),
+            color = Color(10, 10, 100),
+            style = MaterialTheme.typography.titleMedium,
+            textAlign = TextAlign.Center
+        )
 
-                    ) {
-                    BackButton(
-                        navController = navController,
-                        modifier = Modifier.weight(1f)
-                    )
-                    Text(
-                        text = "Chat with user",
-                        modifier = Modifier
-                            .wrapContentHeight()
-                            .padding(12.dp)
+        Icon(
+            modifier = Modifier
+                .weight(1f)
+                .padding(56.dp, 0.dp, 0.dp, 0.dp)
+                .clickable {
+                    expandedMenu = true
+                },
+            imageVector = Icons.Default.MoreVert,
+            contentDescription = "Menu",
+            tint = Color(10, 10, 100),
+        )
 
-                            .weight(2f),
-                        color = Color(10, 10, 100),
-                        style = MaterialTheme.typography.titleSmall
-                    )
-                }
+        Column(modifier = Modifier.padding(vertical = 8.dp)) {
+            DropdownMenu(
+                expanded = expandedMenu,
+                onDismissRequest = { expandedMenu = false }
+            ) {
+                DropdownMenuItem(text = { Text("Delete") }, onClick = {
+                    deleteChat()
+                    onBackClick(navController)
+                })
             }
         }
     }
 }
 
 @Composable
-fun HandleListOfMessages(loadMessages: LoadListState<MessageUI>) {
+fun HandleListOfMessages(
+    loadMessages: LoadListState<MessageUI>,
+    deleteMessage: (MessageUI) -> Unit
+) {
     Box(modifier = Modifier.fillMaxSize()) {
         if (loadMessages is LoadListState.Success) {
             val listState = rememberLazyListState()
@@ -205,7 +200,10 @@ fun HandleListOfMessages(loadMessages: LoadListState<MessageUI>) {
                 state = listState
             ) {
                 items(items = loadMessages.list.sortedBy { it.timestamp }) {
-                    if (it.isMyMessage) MyMessageItem(message = it)
+                    if (it.isMyMessage) MyMessageItem(
+                        message = it,
+                        deleteMessage = deleteMessage
+                    )
                     else CompanionMessageItem(message = it)
                 }
             }
@@ -218,6 +216,56 @@ fun HandleListOfMessages(loadMessages: LoadListState<MessageUI>) {
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun SendMessageContainer(modifier: Modifier, sendMessage: (String) -> Unit) {
+    var messageText by remember { mutableStateOf(TextFieldValue()) }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusRequester = remember { FocusRequester() }
+    OutlinedTextField(
+        modifier = modifier
+            .fillMaxWidth()
+            .focusRequester(focusRequester),
+        value = messageText,
+        onValueChange = { messageText = it },
+        singleLine = false,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+        placeholder = {
+            Text(
+                "New message",
+                modifier = Modifier.padding(vertical = 4.dp)
+            )
+        },
+        shape = RoundedCornerShape(
+            CornerSize(16.dp),
+            CornerSize(16.dp),
+            CornerSize(0.dp),
+            CornerSize(0.dp)
+        ),
+        colors = newMessageColors(),
+        trailingIcon = {
+            IconButton(
+                modifier = Modifier.padding(0.dp),
+                onClick = {
+                    if (messageText.text.trim().isNotEmpty()) {
+                        sendMessage(messageText.text)
+                        messageText = TextFieldValue()
+                        focusRequester.freeFocus()
+                        keyboardController?.hide()
+                    }
+                }) {
+                Icon(
+                    imageVector = Icons.Filled.PlayArrow,
+                    modifier = Modifier
+                        .padding(0.dp)
+                        .size(32.dp),
+                    tint = Color(10, 10, 100),
+                    contentDescription = ""
+                )
+            }
+        }
+    )
+}
 
 @Composable
 private fun newMessageColors() = OutlinedTextFieldDefaults.colors(
@@ -274,9 +322,18 @@ fun CompanionMessageItem(message: MessageUI) {
 }
 
 @Composable
-fun MyMessageItem(message: MessageUI) {
+fun MyMessageItem(message: MessageUI, deleteMessage: (MessageUI) -> Unit) {
+    var isLongPressed by remember { mutableStateOf(false) }
     Box(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onLongPress = {
+                        isLongPressed = true
+                    }
+                )
+            }
     ) {
         Card(
             modifier = Modifier
@@ -310,13 +367,23 @@ fun MyMessageItem(message: MessageUI) {
                         color = Color(120, 200, 250)
                     )
                 }
+                if (isLongPressed) {
+                    DropdownMenu(
+                        expanded = isLongPressed,
+                        onDismissRequest = { isLongPressed = false },
+                    ) {
+                        DropdownMenuItem(text = { Text("Delete messsage") }, onClick = {
+                            deleteMessage(message)
+                            isLongPressed = false
+                        })
+                    }
+                }
             }
         }
     }
 }
 
 
-//Custom Extension
 val Int.percentWidth: Dp
     @Composable
     get() = (this / 100f * LocalConfiguration.current.screenWidthDp).dp
@@ -326,7 +393,13 @@ val Int.percentWidth: Dp
 @Composable
 fun ChatScreenPreview() {
     ChatSampleTheme {
-        ChatScreenContent(LoadListState.Success(emptyList())) {}
+        ChatScreenContent(
+            LoadListState.Success(testList),
+            companionName = "Kevin",
+            sendMessage = {},
+            deleteChat = {},
+            deleteMessage = {})
+
     }
 }
 
@@ -360,6 +433,24 @@ fun MyMessageItemPreview() {
                 timestamp = Timestamp(1, 0),
                 text = "Hello, my dear friend"
             )
-        )
+        ) {}
     }
 }
+
+private val testList = listOf(
+    MessageUI(
+        id = "0",
+        authorId = "09",
+        authorName = "Kevin",
+        isMyMessage = false,
+        timestamp = Timestamp(1, 0),
+        text = "Hello, my dear friend I am so glad to hear you are doing great at work "
+    ), MessageUI(
+        id = "01",
+        authorId = "091",
+        authorName = "Olga",
+        isMyMessage = true,
+        timestamp = Timestamp(1, 0),
+        text = "Hello, my dear friend"
+    )
+)

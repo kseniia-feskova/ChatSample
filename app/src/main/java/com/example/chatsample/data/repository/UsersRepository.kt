@@ -45,6 +45,17 @@ class UsersRepository @Inject constructor(private val usersPreferences: UserPref
         return usersPreferences.loggedId
     }
 
+    override suspend fun deleteChat(userId: String, chatId: String) {
+        val user = getUserOrNull(userId)
+        if (user != null) {
+            val oldChats = user.chats.toMutableMap()
+            oldChats.remove(chatId)
+            collection.document(user.id).update("chats", oldChats).addOnSuccessListener {
+                Log.e("deleteChat", "for $chatId")
+            }.await()
+        }
+    }
+
     override suspend fun getNewCompanions(): List<UserData> {
         val documents = collection.get().await().documents.filter { it.id != getLoggedId() }
         val currentChats = getUserOrNull(getLoggedId())?.chats?.keys
