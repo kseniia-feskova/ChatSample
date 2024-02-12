@@ -1,6 +1,12 @@
 package com.example.chatsample.data.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverter
+
+@Entity(tableName = "NewsDB")
 data class NewsItem(
+    @PrimaryKey
     val id: String,
     val title: String,
     val description: String,
@@ -11,3 +17,15 @@ data class NewsItem(
     val category: List<String>,
     val published: String
 )
+
+class Converters {
+    @TypeConverter
+    fun fromString(value: String): List<String> {
+        return value.split(",")
+    }
+
+    @TypeConverter
+    fun listToString(list: List<String>): String {
+        return list.joinToString(",")
+    }
+}
