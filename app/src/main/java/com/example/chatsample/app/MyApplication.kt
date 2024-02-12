@@ -12,10 +12,7 @@ class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         Kotpref.init(applicationContext)
-        appComponent = DaggerAppComponent.builder()
-            .applicationContext(this)
-            .build()
-
+        appComponent = DaggerAppComponent.factory().create(this)
         appComponent.inject(this)
     }
 }

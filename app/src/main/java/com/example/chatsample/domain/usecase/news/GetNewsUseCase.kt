@@ -10,9 +10,10 @@ import javax.inject.Inject
 class GetNewsUseCase @Inject constructor(private val newsRepository: INewsRepository) :
     IGetNewsUseCase {
     override fun invoke(onSuccess: (List<NewsUI>) -> Unit, onError: (String) -> Unit) {
-        val result = newsRepository.getCurrentNews().subscribeOn(Schedulers.io())
+        val result = newsRepository.getCurrentNewsFromApi().subscribeOn(Schedulers.io())
             .observeOn(Schedulers.single())
             .map { response ->
+                newsRepository.saveNewsLocally(response.news)
                 response.news.map { mapperForNews(it) }
             }
             .subscribe({ news ->
@@ -20,7 +21,7 @@ class GetNewsUseCase @Inject constructor(private val newsRepository: INewsReposi
                 onSuccess(news)
             }, { error ->
                 println("Ошибка при выполнении запроса: ${error.message}")
-                onError(error.message.toString())
+                onSuccess(newsRepository.getCurrentNewsFromDB().map { mapperForNews(it) })
             })
     }
 
