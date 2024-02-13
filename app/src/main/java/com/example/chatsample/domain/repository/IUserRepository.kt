@@ -11,4 +11,5 @@ interface IUserRepository {
     suspend fun updateUnreadChat(userId: String? = null, chatId: String, isRead: Boolean)
     fun saveUsersIdLocally(id: String)
     fun getLoggedId(): String
+    suspend fun deleteChat(userId: String, chatId: String)
 }

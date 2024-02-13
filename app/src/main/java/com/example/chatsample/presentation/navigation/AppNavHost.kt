@@ -44,13 +44,16 @@ fun AppNavHost(
         }
 
         composable(
-            "${NavigationItem.Chat.route}/{chatId}/{companionId}",
+            "${NavigationItem.Chat.route}/{chatId}/{companionId}/{companionName}",
             arguments = listOf(navArgument("chatId") { type = NavType.StringType; nullable = true },
-                navArgument("companionId") { type = NavType.StringType; nullable = true })
+                navArgument("companionId") { type = NavType.StringType; nullable = true },
+                navArgument("companionName") { type = NavType.StringType; nullable = true }
+                )
         ) { backStackEntry ->
             ChatScreen(
                 chatId = backStackEntry.arguments?.getString("chatId") ?: "",
                 companionId = backStackEntry.arguments?.getString("companionId") ?: "",
+                companionName = backStackEntry.arguments?.getString("companionName") ?: "",
                 getVmFactory = getVmFactory,
                 navController = navController
             )

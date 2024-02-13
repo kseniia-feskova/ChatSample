@@ -48,6 +48,7 @@ import com.example.chatsample.presentation.model.LoadListState
 import com.example.chatsample.presentation.navigation.Screen
 import com.example.chatsample.presentation.view.items.ChatPreviewItem
 import com.example.chatsample.presentation.view.ui.theme.ChatSampleTheme
+import com.example.chatsample.presentation.view.utils.BackButton
 import com.example.chatsample.presentation.view.utils.BottomDrawerContent
 import com.example.chatsample.presentation.view.utils.FloatingButtonContent
 import com.example.chatsample.presentation.viewmodels.ChatsViewModel
@@ -88,7 +89,6 @@ fun ChatsAndContacts(
             floatingActionButtonPosition = handleFabPosition(listOfChats),
             content = { paddings ->
                 Column {
-
                     BackButton(
                         navController = navController,
                         modifier = Modifier.align(Alignment.Start)
@@ -239,7 +239,7 @@ fun ContactsDrawer(
                         modifier = Modifier
                             .padding(8.dp)
                             .clickable {
-                                navController?.navigate("${Screen.CHAT.name}/${null}/${it.id}")
+                                navController?.navigate("${Screen.CHAT.name}/${null}/${it.id}/${it.name}")
                             },
                         color = Color(10, 10, 100),
                         style = MaterialTheme.typography.labelMedium,

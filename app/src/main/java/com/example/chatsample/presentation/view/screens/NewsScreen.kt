@@ -24,6 +24,7 @@ import androidx.navigation.NavController
 import com.example.chatsample.domain.model.NewsUI
 import com.example.chatsample.presentation.model.LoadListState
 import com.example.chatsample.presentation.view.items.NewPreviewItem
+import com.example.chatsample.presentation.view.utils.BackButton
 import com.example.chatsample.presentation.viewmodels.NewsViewModel
 
 @Composable
@@ -119,5 +120,3 @@ fun EmptyNewsMessage() {
 fun EmptyNewsMessagePreview() {
     EmptyNewsMessage()
 }
-
-//Error News

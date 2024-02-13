@@ -7,11 +7,15 @@ import com.example.chatsample.domain.repository.IUserRepository
 import com.example.chatsample.domain.usecase.IIsUserLoggedInUseCase
 import com.example.chatsample.domain.usecase.IsUserLoggedInUseCase
 import com.example.chatsample.domain.usecase.chat.CreateChatUseCase
+import com.example.chatsample.domain.usecase.chat.DeleteChatUseCase
+import com.example.chatsample.domain.usecase.chat.DeleteMessageUseCase
 import com.example.chatsample.domain.usecase.chat.GetAllChatsUseCase
 import com.example.chatsample.domain.usecase.chat.GetCompanionForChatUseCase
 import com.example.chatsample.domain.usecase.chat.GetCompanionsUseCase
 import com.example.chatsample.domain.usecase.chat.GetListOfMessagesUseCase
 import com.example.chatsample.domain.usecase.chat.ICreateChatUseCase
+import com.example.chatsample.domain.usecase.chat.IDeleteChatUseCase
+import com.example.chatsample.domain.usecase.chat.IDeleteMessageUseCase
 import com.example.chatsample.domain.usecase.chat.IGetAllChatsUseCase
 import com.example.chatsample.domain.usecase.chat.IGetCompanionForChatUseCase
 import com.example.chatsample.domain.usecase.chat.IGetCompanionsUseCase
@@ -117,5 +121,19 @@ class DomainModule {
     @Provides
     fun provideGetNewsUseCase(newsRepository: INewsRepository): IGetNewsUseCase {
         return GetNewsUseCase(newsRepository)
+    }
+
+    @Provides
+    fun provideDeleteChatUseCase(
+        chatsRepository: IChatsRepository,
+        userRepository: IUserRepository
+    ): IDeleteChatUseCase {
+        return DeleteChatUseCase(chatsRepository, userRepository)
+    }
+    @Provides
+    fun provideDeleteMessageUseCase(
+        chatsRepository: IChatsRepository,
+    ): IDeleteMessageUseCase {
+        return DeleteMessageUseCase(chatsRepository)
     }
 }
