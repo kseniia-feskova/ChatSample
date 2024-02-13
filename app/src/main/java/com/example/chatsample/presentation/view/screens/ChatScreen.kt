@@ -1,6 +1,5 @@
 package com.example.chatsample.presentation.view.screens
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -49,6 +48,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
@@ -58,6 +58,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.chatsample.R
 import com.example.chatsample.domain.model.MessageUI
 import com.example.chatsample.presentation.model.LoadListState
 import com.example.chatsample.presentation.view.ui.theme.Blue50
@@ -80,7 +81,6 @@ fun ChatScreen(
         viewModel.setCompanionId(companionId)
     }
     if (chatId.isNotEmpty()) {
-        Log.e("ChatScreen", "chatId = $chatId")
         viewModel.setChatId(chatId)
         viewModel.updateChatAsRead()
     }
@@ -164,7 +164,7 @@ fun ChatTopBar(
                     expandedMenu = true
                 },
             imageVector = Icons.Default.MoreVert,
-            contentDescription = "Menu",
+            contentDescription = stringResource(id = R.string.menu),
             tint = Color(10, 10, 100),
         )
 
@@ -173,9 +173,9 @@ fun ChatTopBar(
                 expanded = expandedMenu,
                 onDismissRequest = { expandedMenu = false }
             ) {
-                DropdownMenuItem(text = { Text("Delete") }, onClick = {
+                DropdownMenuItem(text = { Text(stringResource(id = R.string.delete)) }, onClick = {
                     deleteChat()
-                    onBackClick(navController)
+                    navController?.popBackStack()
                 })
             }
         }
@@ -232,7 +232,7 @@ fun SendMessageContainer(modifier: Modifier, sendMessage: (String) -> Unit) {
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
         placeholder = {
             Text(
-                "New message",
+                stringResource(id = R.string.new_message),
                 modifier = Modifier.padding(vertical = 4.dp)
             )
         },
@@ -260,7 +260,7 @@ fun SendMessageContainer(modifier: Modifier, sendMessage: (String) -> Unit) {
                         .padding(0.dp)
                         .size(32.dp),
                     tint = Color(10, 10, 100),
-                    contentDescription = ""
+                    contentDescription = stringResource(id = R.string.send)
                 )
             }
         }
@@ -372,7 +372,7 @@ fun MyMessageItem(message: MessageUI, deleteMessage: (MessageUI) -> Unit) {
                         expanded = isLongPressed,
                         onDismissRequest = { isLongPressed = false },
                     ) {
-                        DropdownMenuItem(text = { Text("Delete messsage") }, onClick = {
+                        DropdownMenuItem(text = { Text(stringResource(id = R.string.delete)) }, onClick = {
                             deleteMessage(message)
                             isLongPressed = false
                         })
@@ -408,14 +408,7 @@ fun ChatScreenPreview() {
 fun CompanionMessageItemPreview() {
     ChatSampleTheme {
         CompanionMessageItem(
-            MessageUI(
-                id = "0",
-                authorId = "09",
-                authorName = "Kevin",
-                isMyMessage = false,
-                timestamp = Timestamp(1, 0),
-                text = "Hello, my dear friend I am so glad to hear you are doing great at work "
-            )
+           testList[0]
         )
     }
 }
@@ -425,14 +418,7 @@ fun CompanionMessageItemPreview() {
 fun MyMessageItemPreview() {
     ChatSampleTheme {
         MyMessageItem(
-            MessageUI(
-                id = "01",
-                authorId = "091",
-                authorName = "Olga",
-                isMyMessage = true,
-                timestamp = Timestamp(1, 0),
-                text = "Hello, my dear friend"
-            )
+          testList[1]
         ) {}
     }
 }

@@ -12,9 +12,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.rememberNavController
+import com.example.chatsample.R
 import com.example.chatsample.app.MyApplication
 import com.example.chatsample.app.NetworkStatusHelper
 import com.example.chatsample.presentation.navigation.AppNavHost
@@ -53,7 +55,7 @@ class MainActivity : ComponentActivity() {
         Snackbar(modifier = modifier
             .padding(16.dp),
             containerColor = Color(10, 10, 100),
-            content = { Text("Internet connection is missing") })
+            content = { Text(stringResource(id = R.string.no_internet_connection)) })
     }
 }
 

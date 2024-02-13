@@ -1,0 +1,27 @@
+<resources>
+    <string name="back">Назад</string>
+    <string name="chats">Чати</string>
+    <string name="app_name">ChatSample</string>
+    <string name="confirm_password">Підтвердьте пароль</string>
+    <string name="delete">Видалити</string>
+    <string name="error_occur">Сталася помилка %s</string>
+    <string name="hello">Привіт</string>
+    <string name="hide_password">Приховати пароль</string>
+    <string name="login">Aвторизуватися</string>
+    <string name="logout">Вийти</string>
+    <string name="menu">Меню</string>
+    <string name="new_message">Нове повідомлення</string>
+    <string name="news">Новини</string>
+    <string name="password">Пароль</string>
+    <string name="error_different_passwords">Паролі мають бути однаковими</string>
+    <string name="select_companion">Виберіть собі співрозмовника:</string>
+    <string name="signup">Зареєструватись</string>
+    <string name="send">Відправити</string>
+    <string name="show_password">Показати пароль</string>
+    <string name="error_internal">Відбулася внутрішня помилка</string>
+    <string name="empty_chats">Поки що у Вас немає чатів.\nНатисніть кнопку, щоб створити свій перший чат</string>
+    <string name="empty_new_companions">Для Вас немає нових співрозмовників</string>
+    <string name="empty_news">Для Вас немає новин</string>
+    <string name="username">Ім\'я користувача</string>
+    <string name="no_internet_connection">Відсутнє підключення до Інтернету</string>
+</resources>

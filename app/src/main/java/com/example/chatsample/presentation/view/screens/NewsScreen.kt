@@ -15,12 +15,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.chatsample.R
 import com.example.chatsample.domain.model.NewsUI
 import com.example.chatsample.presentation.model.LoadListState
 import com.example.chatsample.presentation.view.items.NewPreviewItem
@@ -57,7 +59,7 @@ fun NewsScreenContent(listOfChats: LoadListState<NewsUI>, navController: NavCont
             }
 
             is LoadListState.Loading -> {
-                Log.e("RegistrationForm", "Loading")
+                Log.e("NewsScreenContent", "Loading")
             }
 
             is LoadListState.Error -> {
@@ -69,7 +71,6 @@ fun NewsScreenContent(listOfChats: LoadListState<NewsUI>, navController: NavCont
 
 @Composable
 fun NewsList(list: List<NewsUI>) {
-    Log.e("NewsList", "List = ${list.size}")
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -108,7 +109,7 @@ fun EmptyNewsMessage() {
                 .align(Alignment.Center)
                 .wrapContentSize(),
             textAlign = TextAlign.Center,
-            text = "There is no news for now",
+            text = stringResource(id = R.string.empty_news),
             style = MaterialTheme.typography.labelLarge,
             color = Color(10, 10, 100)
         )
