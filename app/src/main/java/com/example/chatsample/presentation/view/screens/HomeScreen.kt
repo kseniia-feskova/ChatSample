@@ -12,11 +12,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.chatsample.R
 import com.example.chatsample.presentation.navigation.Screen
 import com.example.chatsample.presentation.view.ui.theme.ChatSampleTheme
 import com.example.chatsample.presentation.viewmodels.HomeViewModel
@@ -49,7 +51,7 @@ fun MainHomeScreenContent(navController: NavController? = null) {
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(vertical = 8.dp),
-                text = "Hello",
+                text = stringResource(id = R.string.hello),
                 style = MaterialTheme.typography.headlineMedium,
                 color = Color(10, 10, 100)
             )
@@ -62,9 +64,7 @@ fun MainHomeScreenContent(navController: NavController? = null) {
                     .align(Alignment.CenterHorizontally),
                 onClick = { navController?.navigate(Screen.LOGIN.name) }
             ) {
-                Text(
-                    text = "Log in", color = Color(-10, -10, -1)
-                )
+                Text(text = stringResource(id = R.string.login), color = Color(-10, -10, -1))
             }
             Button(
                 colors = ButtonDefaults.buttonColors(
@@ -76,7 +76,7 @@ fun MainHomeScreenContent(navController: NavController? = null) {
                 onClick = { navController?.navigate(Screen.SIGNUP.name) }
             ) {
                 Text(
-                    text = "Sign up", color = Color(-10, -10, -1)
+                    text = stringResource(id = R.string.signup), color = Color(-10, -10, -1)
                 )
             }
         }

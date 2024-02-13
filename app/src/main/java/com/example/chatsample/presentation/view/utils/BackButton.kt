@@ -7,10 +7,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.chatsample.presentation.view.screens.onBackClick
+import com.example.chatsample.R
 
 @Composable
 fun BackButton(navController: NavController?, modifier: Modifier) {
@@ -20,8 +21,12 @@ fun BackButton(navController: NavController?, modifier: Modifier) {
             .clickable {
                 onBackClick(navController)
             },
-        text = "Back", color = Color(10, 10, 100),
+        text = stringResource(id = R.string.back), color = Color(10, 10, 100),
         textAlign = TextAlign.Center,
         style = MaterialTheme.typography.bodyMedium
     )
+}
+
+private fun onBackClick(navController: NavController?) {
+    navController?.popBackStack()
 }

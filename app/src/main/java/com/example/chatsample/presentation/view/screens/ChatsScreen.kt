@@ -36,12 +36,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.chatsample.R
 import com.example.chatsample.domain.model.ChatUI
 import com.example.chatsample.domain.model.UserUI
 import com.example.chatsample.presentation.model.LoadListState
@@ -107,11 +109,11 @@ fun ChatsAndContacts(
                         }
 
                         is LoadListState.Loading -> {
-                            Log.e("RegistrationForm", "Loading")
+                            Log.e("ChatsAndContacts", "Loading")
                         }
 
                         is LoadListState.Error -> {
-                            ErrorMessage("There is internal error")
+                            ErrorMessage(stringResource(id = R.string.error_internal))
                         }
                     }
                 }
@@ -152,7 +154,7 @@ fun EmptyListMessage() {
                 .align(Alignment.Center)
                 .wrapContentSize(),
             textAlign = TextAlign.Center,
-            text = "There is no chats for you.\nPlease, click on button to create your first chat",
+            text = stringResource(id = R.string.empty_chats),
             style = MaterialTheme.typography.labelLarge,
             color = Color(10, 10, 100)
         )
@@ -223,7 +225,7 @@ fun ContactsDrawer(
                         .padding(0.dp, 0.dp, 0.dp, 32.dp)
                         .align(Alignment.CenterHorizontally),
                     textAlign = TextAlign.Center,
-                    text = "There is no new users for you",
+                    text = stringResource(id = R.string.empty_new_companions),
                     style = MaterialTheme.typography.labelLarge,
                     color = Color(10, 10, 100)
                 )

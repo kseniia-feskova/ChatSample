@@ -17,11 +17,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.chatsample.R
 import com.example.chatsample.presentation.navigation.NavigationItem
 import com.example.chatsample.presentation.navigation.Screen
 import com.example.chatsample.presentation.viewmodels.MainViewModel
@@ -56,7 +58,7 @@ fun MainScreenContent(onLogOut: () -> Unit, navController: NavController? = null
                 onClick = { navController?.navigate(Screen.NEWS.name) }
             ) {
                 Text(
-                    text = "News", color = Color(-10, -10, -1)
+                    text = stringResource(id = R.string.news), color = Color(-10, -10, -1)
                 )
             }
             Button(
@@ -69,7 +71,7 @@ fun MainScreenContent(onLogOut: () -> Unit, navController: NavController? = null
                 onClick = { navController?.navigate(Screen.CHATS.name) }
             ) {
                 Text(
-                    text = "Chats", color = Color(-10, -10, -1)
+                    text = stringResource(id = R.string.chats), color = Color(-10, -10, -1)
                 )
             }
         }
@@ -82,11 +84,14 @@ fun MainScreenContent(onLogOut: () -> Unit, navController: NavController? = null
                 navController?.navigate(NavigationItem.Home.route)
             }) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = "Logout", modifier = Modifier.padding(horizontal = 4.dp))
+                Text(
+                    text = stringResource(id = R.string.logout),
+                    modifier = Modifier.padding(horizontal = 4.dp)
+                )
                 Icon(
                     tint = Color(10, 10, 100),
                     imageVector = Icons.Filled.ExitToApp,
-                    contentDescription = "logOut"
+                    contentDescription = stringResource(id = R.string.logout)
                 )
             }
         }

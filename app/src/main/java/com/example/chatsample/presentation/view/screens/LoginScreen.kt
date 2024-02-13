@@ -3,7 +3,6 @@ package com.example.chatsample.presentation.view.screens
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,7 +18,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -30,9 +28,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -41,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.chatsample.R
 import com.example.chatsample.presentation.model.UserUiState
 import com.example.chatsample.presentation.navigation.Screen
 import com.example.chatsample.presentation.view.ui.theme.Blue10
@@ -48,6 +46,7 @@ import com.example.chatsample.presentation.view.ui.theme.Blue30
 import com.example.chatsample.presentation.view.ui.theme.Blue50
 import com.example.chatsample.presentation.view.ui.theme.ChatSampleTheme
 import com.example.chatsample.presentation.view.ui.theme.WhiteBlue
+import com.example.chatsample.presentation.view.utils.BackButton
 import com.example.chatsample.presentation.viewmodels.LoginViewModel
 
 @Composable
@@ -60,40 +59,21 @@ fun LoginScreenContent(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Blue50),
     ) {
         Column(
             modifier = Modifier
                 .align(Alignment.Center)
                 .padding(12.dp)
         ) {
-            Text(
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(vertical = 8.dp),
-                text = "Second fragment",
-                style = MaterialTheme.typography.headlineMedium,
-                color = WhiteBlue
-            )
-
             LoginForm(viewModel.userCheck, navController) { name, password ->
                 viewModel.checkAndLogin(name, password)
             }
-
-            Button(
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Transparent
-                ),
+            BackButton(
                 modifier = Modifier
                     .padding(vertical = 8.dp)
                     .align(Alignment.CenterHorizontally),
-                onClick = { onBackClick(navController) }
-            ) {
-                Text(
-                    modifier = Modifier.padding(horizontal = 12.dp),
-                    text = "Back", color = WhiteBlue
-                )
-            }
+                navController = navController
+            )
         }
     }
 }
@@ -105,7 +85,7 @@ fun LoginForm(
     sendData: (String, String) -> Unit
 ) {
     val context = LocalContext.current
-    handleStatus(context, userCheck, navController)
+    HandleStatus(context, userCheck, navController)
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -118,7 +98,7 @@ fun LoginForm(
             value = username,
             onValueChange = { username = it },
             shape = RoundedCornerShape(8.dp),
-            placeholder = { Text("Имя пользователя") },
+            placeholder = { Text(stringResource(id = R.string.username)) },
             colors = editTextColors()
         )
 
@@ -135,7 +115,7 @@ fun LoginForm(
                     passwordVisibility = !passwordVisibility
                 }
             },
-            placeholder = { Text("Пароль") },
+            placeholder = { Text(stringResource(id = R.string.password)) },
             shape = RoundedCornerShape(8.dp),
             colors = editTextColors()
         )
@@ -152,7 +132,7 @@ fun LoginForm(
                 .padding(vertical = 8.dp, horizontal = 16.dp)
                 .align(Alignment.CenterHorizontally),
             onClick = {
-                onSecondButtonClick(
+                onSignUpClick(
                     username,
                     password,
                     sendData
@@ -161,7 +141,7 @@ fun LoginForm(
             enabled = username.isNotBlank() && password.isNotBlank()
         ) {
             Text(
-                text = "Войти", color = Blue50
+                text = stringResource(id = R.string.login), color = Blue50
             )
         }
     }
@@ -181,15 +161,17 @@ private fun editTextColors() = OutlinedTextFieldDefaults.colors(
 
 @Composable
 private fun ShowPasswordIcon(passwordVisibility: Boolean, onClick: (Boolean) -> Unit) {
-    val image: ImageVector = if (passwordVisibility) Icons.Filled.Check else Icons.Filled.Close
-    val description: String = if (passwordVisibility) "Скрыть пароль" else "Показать пароль"
+    val image = if (passwordVisibility) Icons.Filled.Check else Icons.Filled.Close
+    val description = if (passwordVisibility) stringResource(id = R.string.hide_password)
+    else stringResource(id = R.string.show_password)
     IconButton(
         onClick = { onClick(passwordVisibility) }) {
         Icon(imageVector = image, contentDescription = description)
     }
 }
 
-private fun handleStatus(
+@Composable
+private fun HandleStatus(
     context: Context,
     userUiState: UserUiState,
     navController: NavController?
@@ -202,7 +184,7 @@ private fun handleStatus(
 
         is UserUiState.Error -> Toast.makeText(
             context,
-            "Error occur ${userUiState.message}",
+            stringResource(id = R.string.error_occur, userUiState.message),
             Toast.LENGTH_SHORT
         ).show()
 
@@ -210,7 +192,7 @@ private fun handleStatus(
     }
 }
 
-private fun onSecondButtonClick(
+private fun onSignUpClick(
     username: String,
     password: String,
     sendData: (String, String) -> Unit
@@ -220,7 +202,7 @@ private fun onSecondButtonClick(
 
 @Preview(showBackground = true)
 @Composable
-fun LoginFormreview() {
+fun LoginFormPreview() {
     ChatSampleTheme {
         LoginForm(UserUiState.Empty, null) { name, paw ->
             Log.e("Registration form", "$name and $paw")
