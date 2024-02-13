@@ -1,4 +1,4 @@
-package com.example.chatsample.presentation
+package com.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

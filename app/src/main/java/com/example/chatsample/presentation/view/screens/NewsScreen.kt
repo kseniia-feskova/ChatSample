@@ -23,9 +23,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.chatsample.R
-import com.example.chatsample.domain.model.NewsUI
+import com.domain.model.NewsUI
 import com.example.chatsample.presentation.model.LoadListState
-import com.example.chatsample.presentation.view.items.NewPreviewItem
+import com.presentation.view.items.NewPreviewItem
 import com.example.chatsample.presentation.view.utils.BackButton
 import com.example.chatsample.presentation.viewmodels.NewsViewModel
 

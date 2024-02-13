@@ -23,7 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.chatsample.domain.model.ChatUI
+import com.domain.model.ChatUI
 import com.example.chatsample.presentation.navigation.NavigationItem
 import com.example.chatsample.presentation.view.ui.theme.ChatSampleTheme
 import com.google.firebase.Timestamp

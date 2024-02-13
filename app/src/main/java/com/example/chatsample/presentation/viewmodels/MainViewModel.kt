@@ -1,7 +1,7 @@
 package com.example.chatsample.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
-import com.example.chatsample.domain.usecase.login.ILogOutUseCase
+import com.domain.usecase.login.ILogOutUseCase
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(

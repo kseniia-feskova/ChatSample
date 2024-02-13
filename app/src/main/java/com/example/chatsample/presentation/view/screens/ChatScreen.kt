@@ -59,7 +59,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.chatsample.R
-import com.example.chatsample.domain.model.MessageUI
+import com.domain.model.MessageUI
 import com.example.chatsample.presentation.model.LoadListState
 import com.example.chatsample.presentation.view.ui.theme.Blue50
 import com.example.chatsample.presentation.view.ui.theme.ChatSampleTheme

@@ -1,4 +1,4 @@
-package com.example.chatsample.presentation.view.items
+package com.presentation.view.items
 
 import android.content.Context
 import android.content.Intent
@@ -26,9 +26,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
-import com.example.chatsample.domain.model.NewsUI
+import com.domain.model.NewsUI
 import com.example.chatsample.presentation.view.ui.theme.ChatSampleTheme
 
 
