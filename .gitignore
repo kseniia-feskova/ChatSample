@@ -14,3 +14,7 @@
 .cxx
 local.properties
 /.idea/deploymentTargetDropDown.xml
+buildSrc/build
+/.idea/misc.xml
+/.idea/compiler.xml
+/.idea/gradle.xml

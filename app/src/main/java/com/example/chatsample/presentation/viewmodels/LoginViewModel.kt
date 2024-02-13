@@ -5,8 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.chatsample.domain.model.RegistrationUI
-import com.example.chatsample.domain.usecase.login.ILoginUseCase
+import com.domain.model.RegistrationUI
+import com.domain.usecase.login.ILoginUseCase
 import com.example.chatsample.presentation.model.UserUiState
 import kotlinx.coroutines.launch
 import java.io.IOException

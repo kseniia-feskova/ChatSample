@@ -4,8 +4,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.chatsample.domain.model.NewsUI
-import com.example.chatsample.domain.usecase.news.IGetNewsUseCase
+import com.domain.model.NewsUI
+import com.domain.usecase.news.IGetNewsUseCase
 import com.example.chatsample.presentation.model.LoadListState
 import javax.inject.Inject
 

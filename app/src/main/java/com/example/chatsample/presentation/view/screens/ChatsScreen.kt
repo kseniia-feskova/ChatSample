@@ -44,8 +44,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.chatsample.R
-import com.example.chatsample.domain.model.ChatUI
-import com.example.chatsample.domain.model.UserUI
+import com.domain.model.ChatUI
+import com.domain.model.UserUI
 import com.example.chatsample.presentation.model.LoadListState
 import com.example.chatsample.presentation.navigation.Screen
 import com.example.chatsample.presentation.view.items.ChatPreviewItem

@@ -5,10 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.chatsample.domain.model.ChatUI
-import com.example.chatsample.domain.model.UserUI
-import com.example.chatsample.domain.usecase.chat.IGetAllChatsUseCase
-import com.example.chatsample.domain.usecase.chat.IGetCompanionsUseCase
+import com.domain.model.ChatUI
+import com.domain.model.UserUI
+import com.domain.usecase.chat.IGetAllChatsUseCase
+import com.domain.usecase.chat.IGetCompanionsUseCase
 import com.example.chatsample.presentation.model.LoadListState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
