@@ -16,7 +16,7 @@
         android:theme="@style/Theme.ChatSample"
         tools:targetApi="31">
         <activity
-            android:name="com.presentation.MainActivity"
+            android:name="com.example.chatsample.app.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.ChatSample">
             <intent-filter>

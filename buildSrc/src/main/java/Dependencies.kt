@@ -99,6 +99,6 @@ fun DependencyHandler.domain() {
     implementation(project(":chat-domain"))
 }
 
-fun DependencyHandler.app() {
-    implementation(project(":app"))
+fun DependencyHandler.presentation() {
+    implementation(project(":chat-presentation"))
 }

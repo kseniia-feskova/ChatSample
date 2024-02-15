@@ -1,12 +1,11 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
-    id("com.google.gms.google-services")
     kotlin("kapt")
 }
 
 android {
-    namespace = "com.data"
+    namespace = "com.chat_presentation"
     compileSdk = 34
 
     defaultConfig {
@@ -31,16 +30,22 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+        languageVersion = "1.9"
+    }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.1"
     }
 }
 
 dependencies {
-    retrofit()
-    rxJava()
-    room()
     dagger()
+    navigation()
+    compose()
     firebase()
-    kotpref()
+    coil()
 
     domain()
 }
