@@ -66,8 +66,8 @@ dependencies {
     dagger()
     kotpref()
     firebase()
-    coil()
 
     data()
     domain()
+    presentation()
 }
