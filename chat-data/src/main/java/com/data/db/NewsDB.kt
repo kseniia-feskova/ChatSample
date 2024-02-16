@@ -1,4 +1,4 @@
-package com.example.chatsample.data.db
+package com.data.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

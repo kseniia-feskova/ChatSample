@@ -2,8 +2,8 @@ package com.example.chatsample.app.di
 
 import android.app.Application
 import android.content.Context
-import com.example.chatsample.data.di.DataModule
-import com.example.chatsample.data.di.DatabaseModule
+import com.data.di.DataModule
+import com.data.di.DatabaseModule
 import com.example.chatsample.data.di.KotprefModule
 import com.example.chatsample.data.di.NetworkModule
 import com.domain.di.DomainModule

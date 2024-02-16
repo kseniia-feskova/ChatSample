@@ -1,10 +1,11 @@
-package com.example.chatsample.data.di
+package com.data.di
 
 import com.data.api.ApiService
-import com.example.chatsample.data.db.NewsDB
+import com.data.api.IFirestoreService
+import com.data.db.NewsDB
 import com.example.chatsample.data.repository.UsersRepository
 import com.example.chatsample.data.prefs.UserPreferences
-import com.example.chatsample.data.repository.ChatsRepository
+import com.data.repository.ChatsRepository
 import com.example.chatsample.data.repository.MessagesRepository
 import com.example.chatsample.data.repository.NewsRepository
 import com.domain.repository.IChatsRepository
@@ -22,8 +23,8 @@ class DataModule {
     }
 
     @Provides
-    fun provideChatsRepository(): IChatsRepository {
-        return ChatsRepository()
+    fun provideChatsRepository(firestoreService: IFirestoreService): IChatsRepository {
+        return ChatsRepository(firestoreService)
     }
 
     @Provides

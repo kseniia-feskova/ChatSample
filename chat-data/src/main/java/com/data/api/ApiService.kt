@@ -12,14 +12,8 @@ interface ApiService {
         @Query("apiKey") apiKey: String = API_KEY
     ): Single<NewsResponse>
 
-    @GET("search")
-    fun getNewsByKeyword(
-        @Query("language") language: String = "en",
-        @Query("apiKey") apiKey: String = API_KEY,
-        @Query("keywords") keywords: String
-    ): Single<NewsResponse>
-
     companion object {
         const val API_KEY = "iIf_xP8w5ZCzqnmeyDZHXb8mzrFA5tCU2ackodWVeUKCKrZs"
+        const val BASE_URL = "https://api.currentsapi.services/v1/"
     }
 }
