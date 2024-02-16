@@ -33,6 +33,7 @@ object Dependencies {
     const val coil = "io.coil-kt:coil-compose:${Versions.coil}"
 
     const val room = "androidx.room:room-runtime:${Versions.room}"
+    const val roomRxJava = "androidx.room:room-rxjava3:${Versions.room}"
     const val roomCompiler = "androidx.room:room-compiler:${Versions.room}"
 
 }
@@ -88,6 +89,7 @@ fun DependencyHandler.coil() {
 
 fun DependencyHandler.room() {
     implementation(Dependencies.room)
+    implementation(Dependencies.roomRxJava)
     kapt(Dependencies.roomCompiler)
 }
 
