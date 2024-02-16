@@ -29,6 +29,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,14 +47,14 @@ import androidx.navigation.NavController
 import com.chat_presentation.R
 import com.domain.model.ChatUI
 import com.domain.model.UserUI
-import com.presentation.model.LoadListState
-import com.presentation.navigation.Screen
-import com.presentation.view.items.ChatPreviewItem
 import com.example.chatsample.presentation.view.ui.theme.ChatSampleTheme
-import com.presentation.view.utils.BackButton
 import com.example.chatsample.presentation.view.utils.BottomDrawerContent
 import com.example.chatsample.presentation.view.utils.FloatingButtonContent
 import com.example.chatsample.presentation.viewmodels.ChatsViewModel
+import com.presentation.model.LoadListState
+import com.presentation.navigation.Screen
+import com.presentation.view.items.ChatPreviewItem
+import com.presentation.view.utils.BackButton
 
 @Composable
 fun ChatsAndContactsScreen(
@@ -61,8 +62,13 @@ fun ChatsAndContactsScreen(
     getVmFactory: () -> ViewModelProvider.Factory,
     viewModel: ChatsViewModel = viewModel(factory = getVmFactory()),
 ) {
-    viewModel.callAllChats()
-    viewModel.callCompanions()
+    DisposableEffect(Unit) {
+        viewModel.callAllChats()
+        viewModel.callCompanions()
+        onDispose {
+            viewModel.cancel()
+        }
+    }
     ChatsAndContacts(
         navController,
         viewModel.listOfChats,
