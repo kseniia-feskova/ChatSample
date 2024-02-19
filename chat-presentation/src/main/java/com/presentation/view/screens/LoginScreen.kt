@@ -39,15 +39,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.chat_presentation.R
-import com.presentation.model.UserUiState
-import com.presentation.navigation.Screen
 import com.example.chatsample.presentation.view.ui.theme.Blue10
 import com.example.chatsample.presentation.view.ui.theme.Blue30
 import com.example.chatsample.presentation.view.ui.theme.Blue50
 import com.example.chatsample.presentation.view.ui.theme.ChatSampleTheme
 import com.example.chatsample.presentation.view.ui.theme.WhiteBlue
-import com.presentation.view.utils.BackButton
 import com.example.chatsample.presentation.viewmodels.LoginViewModel
+import com.presentation.model.UserUiState
+import com.presentation.navigation.Screen
+import com.presentation.view.utils.BackButton
 
 @Composable
 fun LoginScreenContent(
@@ -65,9 +65,11 @@ fun LoginScreenContent(
                 .align(Alignment.Center)
                 .padding(12.dp)
         ) {
-            LoginForm(viewModel.userCheck, navController) { name, password ->
+            LoginForm(viewModel.userCheck, navController, sendData = { name, password ->
                 viewModel.checkAndLogin(name, password)
-            }
+            }, resetStatus = {
+                viewModel.resetState()
+            })
             BackButton(
                 modifier = Modifier
                     .padding(vertical = 8.dp)
@@ -82,10 +84,11 @@ fun LoginScreenContent(
 fun LoginForm(
     userCheck: UserUiState,
     navController: NavController?,
-    sendData: (String, String) -> Unit
+    sendData: (String, String) -> Unit,
+    resetStatus: () -> Unit
 ) {
     val context = LocalContext.current
-    HandleStatus(context, userCheck, navController)
+    HandleStatus(context, userCheck, navController, resetStatus)
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -174,7 +177,8 @@ private fun ShowPasswordIcon(passwordVisibility: Boolean, onClick: (Boolean) -> 
 private fun HandleStatus(
     context: Context,
     userUiState: UserUiState,
-    navController: NavController?
+    navController: NavController?,
+    resetStatus: () -> Unit
 ) {
     when (userUiState) {
         is UserUiState.Loading -> Log.e("RegistrationForm", "Loading")
@@ -182,11 +186,14 @@ private fun HandleStatus(
             navController?.navigate(Screen.MAIN.name)
         }
 
-        is UserUiState.Error -> Toast.makeText(
-            context,
-            stringResource(id = R.string.error_occur, userUiState.message),
-            Toast.LENGTH_SHORT
-        ).show()
+        is UserUiState.Error -> {
+            Toast.makeText(
+                context,
+                stringResource(id = R.string.error_occur, userUiState.message),
+                Toast.LENGTH_SHORT
+            ).show()
+            resetStatus()
+        }
 
         is UserUiState.Empty -> Log.e("RegistrationForm", "state is empty")
     }
@@ -204,8 +211,8 @@ private fun onSignUpClick(
 @Composable
 fun LoginFormPreview() {
     ChatSampleTheme {
-        LoginForm(UserUiState.Empty, null) { name, paw ->
+        LoginForm(UserUiState.Empty, null, { name, paw ->
             Log.e("Registration form", "$name and $paw")
-        }
+        }, {})
     }
 }
