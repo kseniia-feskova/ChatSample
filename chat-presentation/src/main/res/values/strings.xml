@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">ChatSample</string>
+    <string name="hello">Hello</string>
+    <string name="login">Log in</string>
+    <string name="signup">Sign up</string>
+    <string name="back">Back</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="show_password">Show password</string>
+    <string name="hide_password">Hide password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="error_occur">Error occur %s</string>
+    <string name="error_different_passwords">Passwords must be the same</string>
+    <string name="error_internal">There is internal error</string>
+    <string name="news">News</string>
+    <string name="chats">Chats</string>
+    <string name="logout">Logout</string>
+    <string name="empty_news">There is no news for now</string>
+    <string name="menu">Menu</string>
+    <string name="delete">Delete</string>
+    <string name="new_message">New message</string>
+    <string name="send">Send</string>
+    <string name="empty_chats">There is no chats for you.\nPlease, click on button to create your first chat</string>
+    <string name="empty_new_companions">There is no new users for you</string>
+    <string name="select_companion">Select you companion:</string>
+    <string name="no_internet_connection">Internet connection is missing</string>
+</resources>
