@@ -17,13 +17,13 @@ import com.domain.usecase.login.ICreateUserUseCase
 import com.domain.usecase.login.ILogOutUseCase
 import com.domain.usecase.login.ILoginUseCase
 import com.domain.usecase.news.IGetNewsUseCase
-import com.example.chatsample.presentation.viewmodels.ChatViewModel
 import com.example.chatsample.presentation.viewmodels.ChatsViewModel
 import com.example.chatsample.presentation.viewmodels.HomeViewModel
 import com.example.chatsample.presentation.viewmodels.LoginViewModel
 import com.example.chatsample.presentation.viewmodels.MainViewModel
 import com.example.chatsample.presentation.viewmodels.NewsViewModel
 import com.example.chatsample.presentation.viewmodels.SignupViewModel
+import com.presentation.viewmodels.ChatViewModel
 import javax.inject.Inject
 
 @Suppress("UNCHECKED_CAST")

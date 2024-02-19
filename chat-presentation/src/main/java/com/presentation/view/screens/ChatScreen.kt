@@ -34,6 +34,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -60,13 +61,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.chat_presentation.R
 import com.domain.model.MessageUI
-import com.presentation.model.LoadListState
 import com.example.chatsample.presentation.view.ui.theme.Blue50
 import com.example.chatsample.presentation.view.ui.theme.ChatSampleTheme
 import com.example.chatsample.presentation.view.ui.theme.WhiteBlue
-import com.presentation.view.utils.BackButton
-import com.example.chatsample.presentation.viewmodels.ChatViewModel
 import com.google.firebase.Timestamp
+import com.presentation.model.LoadListState
+import com.presentation.view.utils.BackButton
+import com.presentation.viewmodels.ChatViewModel
 
 @Composable
 fun ChatScreen(
@@ -77,12 +78,17 @@ fun ChatScreen(
     viewModel: ChatViewModel = viewModel(factory = getVmFactory()),
     navController: NavController
 ) {
-    if (companionId.isNotEmpty()) {
-        viewModel.setCompanionId(companionId)
-    }
-    if (chatId.isNotEmpty()) {
-        viewModel.setChatId(chatId)
-        viewModel.updateChatAsRead()
+    DisposableEffect(Unit) {
+        if (companionId.isNotEmpty()) {
+            viewModel.setCompanionId(companionId)
+        }
+        if (chatId.isNotEmpty()) {
+            viewModel.setChatId(chatId)
+            viewModel.updateChatAsRead()
+        }
+        onDispose {
+            viewModel.cancel()
+        }
     }
     ChatScreenContent(
         loadMessages = viewModel.messagesList,
@@ -372,10 +378,12 @@ fun MyMessageItem(message: MessageUI, deleteMessage: (MessageUI) -> Unit) {
                         expanded = isLongPressed,
                         onDismissRequest = { isLongPressed = false },
                     ) {
-                        DropdownMenuItem(text = { Text(stringResource(id = R.string.delete)) }, onClick = {
-                            deleteMessage(message)
-                            isLongPressed = false
-                        })
+                        DropdownMenuItem(
+                            text = { Text(stringResource(id = R.string.delete)) },
+                            onClick = {
+                                deleteMessage(message)
+                                isLongPressed = false
+                            })
                     }
                 }
             }
@@ -408,7 +416,7 @@ fun ChatScreenPreview() {
 fun CompanionMessageItemPreview() {
     ChatSampleTheme {
         CompanionMessageItem(
-           testList[0]
+            testList[0]
         )
     }
 }
@@ -418,7 +426,7 @@ fun CompanionMessageItemPreview() {
 fun MyMessageItemPreview() {
     ChatSampleTheme {
         MyMessageItem(
-          testList[1]
+            testList[1]
         ) {}
     }
 }

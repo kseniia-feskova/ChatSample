@@ -32,4 +32,8 @@ class LoginViewModel @Inject constructor(
             }
         }
     }
+
+    fun resetState() {
+        userCheck = UserUiState.Empty
+    }
 }

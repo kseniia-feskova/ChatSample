@@ -1,4 +1,4 @@
-package com.example.chatsample.data.repository
+package com.data.repository
 
 import com.domain.model.ChatData
 import com.domain.model.MessageData
@@ -27,7 +27,7 @@ class ChatsRepository : IChatsRepository {
 
     override suspend fun addNewMessage(chatId: String, message: MessageData) {
         getChatDocument(chatId).collection("messages").document(message.id).set(message).await()
-        getChatDocument(chatId).update("timestamp", message.timestamp)
+        getChatDocument(chatId).update("timestamp", message.timestamp).await()
     }
 
     override suspend fun getLastMessage(chatId: String): MessageData? {
@@ -54,7 +54,7 @@ class ChatsRepository : IChatsRepository {
         messages.forEach {
             collection.document(chatId).collection("messages").document(it.id).delete()
         }
-        collection.document(chatId).delete()
+        collection.document(chatId).delete().await()
     }
 
     override suspend fun deleteMessage(messageId: String, chatId: String) {
@@ -62,7 +62,7 @@ class ChatsRepository : IChatsRepository {
         collection.document(chatId).collection("messages").document(messageId).delete()
         if (lastMessage?.id == messageId) {
             val newLastMessage = getLastMessage(chatId)
-            getChatDocument(chatId).update("timestamp", newLastMessage?.timestamp)
+            getChatDocument(chatId).update("timestamp", newLastMessage?.timestamp).await()
         }
     }
 }

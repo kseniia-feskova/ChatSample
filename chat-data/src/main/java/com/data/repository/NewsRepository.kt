@@ -5,6 +5,7 @@ import com.example.chatsample.data.db.NewsDB
 import com.domain.model.NewsItem
 import com.domain.model.NewsResponse
 import com.domain.repository.INewsRepository
+import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
@@ -16,18 +17,18 @@ class NewsRepository @Inject constructor(
         return newsApiService.getLatestNews()
     }
 
-    override fun getCurrentNewsFromDB(): List<NewsItem> {
+    override fun getCurrentNewsFromDB(): Single<List<NewsItem>> {
         return newsDB.getNewsDAO().getNews()
     }
 
-    override fun saveNewsLocally(news: List<NewsItem>) {
+    override fun saveNewsLocally(news: List<NewsItem>): Completable {
         newsDB.getNewsDAO().deleteAll()
         val firstTenNews = if (news.size > 10) {
             news.subList(0, 10)
         } else {
             news
         }
-        newsDB.getNewsDAO().addNews(firstTenNews)
+        return newsDB.getNewsDAO().addNews(firstTenNews)
     }
 }
 /* Solution without rxJava

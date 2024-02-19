@@ -10,6 +10,7 @@ import com.domain.model.UserUI
 import com.domain.usecase.chat.IGetAllChatsUseCase
 import com.domain.usecase.chat.IGetCompanionsUseCase
 import com.presentation.model.LoadListState
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,8 +23,9 @@ class ChatsViewModel @Inject constructor(
     var listOfCompanions: LoadListState<UserUI> by mutableStateOf(LoadListState.Loading)
         private set
 
+    private var currentJob: Job? = null
     fun callAllChats() {
-        viewModelScope.launch {
+        currentJob = viewModelScope.launch {
             listOfChats = try {
                 val chats = getAllChatsUseCase.invoke().sortedByDescending { it.timestamp }.sortedBy { it.isRead }
                 LoadListState.Success(chats)
@@ -34,7 +36,7 @@ class ChatsViewModel @Inject constructor(
     }
 
     fun callCompanions() {
-        viewModelScope.launch {
+        currentJob = viewModelScope.launch {
             listOfCompanions = try {
                 val companions = getCompanionsUseCase.invoke()
                 LoadListState.Success(companions)
@@ -42,5 +44,9 @@ class ChatsViewModel @Inject constructor(
                 LoadListState.Error("Cannot callCompanions, ${e.message}")
             }
         }
+    }
+
+    fun cancel() {
+        currentJob?.cancel()
     }
 }

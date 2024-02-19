@@ -1,16 +1,16 @@
-package com.example.chatsample.data.di
+package com.data.di
 
 import com.data.api.ApiService
-import com.example.chatsample.data.db.NewsDB
-import com.example.chatsample.data.repository.UsersRepository
-import com.example.chatsample.data.prefs.UserPreferences
-import com.example.chatsample.data.repository.ChatsRepository
-import com.example.chatsample.data.repository.MessagesRepository
-import com.example.chatsample.data.repository.NewsRepository
+import com.data.repository.ChatsRepository
 import com.domain.repository.IChatsRepository
 import com.domain.repository.IMessagesRepository
 import com.domain.repository.INewsRepository
 import com.domain.repository.IUserRepository
+import com.example.chatsample.data.db.NewsDB
+import com.example.chatsample.data.prefs.UserPreferences
+import com.example.chatsample.data.repository.MessagesRepository
+import com.example.chatsample.data.repository.NewsRepository
+import com.example.chatsample.data.repository.UsersRepository
 import dagger.Module
 import dagger.Provides
 
