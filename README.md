@@ -7,6 +7,7 @@ The navigation logic and news loading logic are shown in the diagrams in Figma: 
 Preview:
 ---
 ![Chat preview](https://github.com/kseniia-feskova/ChatSample/blob/96c4d20a2fc5755e5e4092c6fad10f2af13016bf/assets/preview_chat.gif)
+
 Technologies:
 ---
 1. Jetpack Compose, Navigation Component, Single Activity
